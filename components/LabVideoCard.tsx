@@ -6,120 +6,168 @@ import {
   Pressable,
   Linking,
   Animated,
+  Image,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/colors";
+
+const VIDEO_ID = "I69f68yXet0";
+const VIDEO_URL = "https://youtube.com/shorts/I69f68yXet0?si=d1PFUvUha9_d003E";
+const THUMBNAIL_URL = `https://img.youtube.com/vi/${VIDEO_ID}/hqdefault.jpg`;
+const CHANNEL_URL = "https://youtube.com/@kashurtechmir";
 
 export default function LabVideoCard() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
 
   useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 600,
-      delay: 300,
-      useNativeDriver: true,
-    }).start();
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        delay: 200,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 8,
+        delay: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
 
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.12,
-          duration: 900,
+          toValue: 1.18,
+          duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnim, {
           toValue: 1,
-          duration: 900,
+          duration: 800,
           useNativeDriver: true,
         }),
       ])
     ).start();
   }, []);
 
-  const handleWatch = () => {
-    Linking.openURL("https://youtube.com/@kashurtechmir");
-  };
+  const handleWatch = () => Linking.openURL(VIDEO_URL);
+  const handleChannel = () => Linking.openURL(CHANNEL_URL);
 
   return (
-    <Animated.View style={[styles.wrapper, { opacity: fadeAnim }]}>
-      <Text style={styles.sectionLabel}>Featured Video</Text>
+    <Animated.View
+      style={[
+        styles.wrapper,
+        { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+      ]}
+    >
+      {/* Header row */}
+      <View style={styles.headerRow}>
+        <View style={styles.headerLeft}>
+          <Ionicons name="videocam" size={15} color="#FF0000" />
+          <Text style={styles.sectionLabel}>Featured Video</Text>
+        </View>
+        <View style={styles.shortsBadge}>
+          <Ionicons name="phone-portrait-outline" size={11} color={Colors.brand.accentLight} />
+          <Text style={styles.shortsBadgeText}>Shorts</Text>
+        </View>
+      </View>
 
+      {/* Main card */}
       <Pressable
         onPress={handleWatch}
         style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       >
-        {/* Video thumbnail background */}
-        <LinearGradient
-          colors={["#0A2463", "#1034A6", "#0E3A8C"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.thumbnail}
-        >
-          {/* Circuit-pattern decoration */}
-          <View style={styles.circuitDot1} />
-          <View style={styles.circuitDot2} />
-          <View style={styles.circuitLine1} />
-          <View style={styles.circuitLine2} />
-          <View style={styles.circuitLine3} />
+        {/* Thumbnail */}
+        <View style={styles.thumbnailContainer}>
+          <Image
+            source={{ uri: THUMBNAIL_URL }}
+            style={styles.thumbnailImage}
+            resizeMode="cover"
+          />
 
-          {/* YouTube badge */}
+          {/* Dark overlay for readability */}
+          <View style={styles.overlay} />
+
+          {/* YouTube Shorts badge top-left */}
           <View style={styles.ytBadge}>
             <Ionicons name="logo-youtube" size={14} color="#FF0000" />
-            <Text style={styles.ytBadgeText}>YouTube</Text>
+            <Text style={styles.ytBadgeText}>YouTube Shorts</Text>
           </View>
 
-          {/* Play button */}
+          {/* Pulsing play button center */}
           <View style={styles.playContainer}>
             <Animated.View
-              style={[
-                styles.playGlow,
-                { transform: [{ scale: pulseAnim }] },
-              ]}
+              style={[styles.playGlow, { transform: [{ scale: pulseAnim }] }]}
             />
-            <View style={styles.playBtn}>
-              <Ionicons name="play" size={28} color={Colors.brand.white} style={{ marginLeft: 4 }} />
+            <View style={styles.playRing}>
+              <View style={styles.playBtn}>
+                <Ionicons
+                  name="play"
+                  size={30}
+                  color={Colors.brand.white}
+                  style={{ marginLeft: 5 }}
+                />
+              </View>
             </View>
           </View>
 
-          {/* Duration chip */}
-          <View style={styles.durationChip}>
-            <Ionicons name="flask" size={11} color={Colors.brand.accentLight} />
-            <Text style={styles.durationText}>Lab Session</Text>
+          {/* Title overlay bottom */}
+          <View style={styles.titleOverlay}>
+            <Text style={styles.overlayTitle}>Explore Lab with Experts</Text>
+            <Text style={styles.overlayMeta}>Tap to watch on YouTube</Text>
           </View>
-        </LinearGradient>
+        </View>
 
-        {/* Video info */}
-        <View style={styles.infoRow}>
+        {/* Info bar */}
+        <View style={styles.infoBar}>
           <View style={styles.channelAvatar}>
             <Ionicons name="school" size={16} color={Colors.brand.white} />
           </View>
           <View style={styles.videoMeta}>
             <Text style={styles.videoTitle}>Explore Lab with Experts</Text>
-            <Text style={styles.channelName}>KashurTechMir · Practical Training</Text>
+            <Text style={styles.channelName}>
+              KashurTechMir · Lab Demo
+            </Text>
           </View>
           <Pressable
             onPress={handleWatch}
-            style={({ pressed }) => [styles.watchBtn, pressed && { opacity: 0.8 }]}
+            style={({ pressed }) => [
+              styles.watchBtn,
+              pressed && { opacity: 0.8 },
+            ]}
           >
-            <Ionicons name="open-outline" size={14} color={Colors.brand.white} />
-            <Text style={styles.watchText}>Watch</Text>
+            <Ionicons name="logo-youtube" size={14} color={Colors.brand.white} />
+            <Text style={styles.watchBtnText}>Watch</Text>
           </Pressable>
         </View>
       </Pressable>
 
-      {/* Subscribe row */}
+      {/* Subscribe strip */}
       <Pressable
-        onPress={handleWatch}
-        style={({ pressed }) => [styles.subscribeRow, pressed && { opacity: 0.8 }]}
+        onPress={handleChannel}
+        style={({ pressed }) => [
+          styles.subscribeStrip,
+          pressed && { opacity: 0.75 },
+        ]}
       >
-        <Ionicons name="logo-youtube" size={18} color="#FF0000" />
-        <Text style={styles.subscribeText}>
-          Subscribe to <Text style={styles.subscribeBold}>@kashurtechmir</Text> for more videos
-        </Text>
-        <Ionicons name="chevron-forward" size={14} color={Colors.brand.midGray} />
+        <View style={styles.subscribeLeft}>
+          <Ionicons name="logo-youtube" size={18} color="#FF0000" />
+          <Text style={styles.subscribeText}>
+            Subscribe to{" "}
+            <Text style={styles.subscribeBold}>@kashurtechmir</Text> for more
+          </Text>
+        </View>
+        <View style={styles.subscribeArrow}>
+          <Ionicons
+            name="arrow-forward"
+            size={14}
+            color={Colors.brand.accentLight}
+          />
+        </View>
       </Pressable>
     </Animated.View>
   );
@@ -127,85 +175,86 @@ export default function LabVideoCard() {
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingHorizontal: 20,
-    paddingTop: 6,
-    paddingBottom: 8,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
     gap: 10,
     backgroundColor: "#061539",
   },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  headerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
   sectionLabel: {
     fontFamily: "Poppins_600SemiBold",
-    fontSize: 11,
-    color: Colors.brand.accentLight,
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
+    fontSize: 12,
+    color: Colors.brand.white,
+    letterSpacing: 0.5,
   },
-  card: {
-    borderRadius: 18,
-    overflow: "hidden",
+  shortsBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
   },
-  cardPressed: {
-    opacity: 0.9,
-    transform: [{ scale: 0.99 }],
+  shortsBadgeText: {
+    fontFamily: "Poppins_500Medium",
+    fontSize: 10,
+    color: Colors.brand.accentLight,
   },
-  thumbnail: {
-    height: 190,
+  card: {
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.14)",
+  },
+  cardPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.985 }],
+  },
+  thumbnailContainer: {
+    height: 210,
+    backgroundColor: "#0A2463",
+    position: "relative",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
   },
-  circuitDot1: {
-    position: "absolute",
-    top: 20,
-    left: 20,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "rgba(62,146,204,0.4)",
-  },
-  circuitDot2: {
-    position: "absolute",
-    bottom: 30,
-    right: 30,
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "rgba(91,196,250,0.3)",
-  },
-  circuitLine1: {
-    position: "absolute",
-    top: 24,
-    left: 28,
-    width: 60,
-    height: 1,
-    backgroundColor: "rgba(62,146,204,0.3)",
-  },
-  circuitLine2: {
-    position: "absolute",
-    bottom: 33,
-    right: 36,
-    width: 50,
-    height: 1,
-    backgroundColor: "rgba(91,196,250,0.25)",
-  },
-  circuitLine3: {
+  thumbnailImage: {
     position: "absolute",
     top: 0,
+    left: 0,
+    right: 0,
     bottom: 0,
-    left: "50%",
-    width: 1,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(6,21,57,0.38)",
   },
   ytBadge: {
     position: "absolute",
     top: 12,
-    right: 12,
+    left: 12,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.65)",
     borderRadius: 8,
     paddingHorizontal: 9,
     paddingVertical: 5,
@@ -218,52 +267,61 @@ const styles = StyleSheet.create({
   playContainer: {
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 1,
   },
   playGlow: {
     position: "absolute",
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "rgba(62,146,204,0.25)",
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "rgba(30, 100, 220, 0.3)",
+  },
+  playRing: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 2.5,
+    borderColor: "rgba(255,255,255,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.35)",
   },
   playBtn: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "rgba(255,255,255,0.18)",
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.4)",
     alignItems: "center",
     justifyContent: "center",
   },
-  durationChip: {
+  titleOverlay: {
     position: "absolute",
-    bottom: 12,
-    left: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    borderRadius: 8,
-    paddingHorizontal: 9,
-    paddingVertical: 5,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    backgroundColor: "rgba(6,21,57,0.75)",
+    gap: 2,
   },
-  durationText: {
-    fontFamily: "Poppins_500Medium",
+  overlayTitle: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 13,
+    color: Colors.brand.white,
+  },
+  overlayMeta: {
+    fontFamily: "Poppins_400Regular",
     fontSize: 10,
-    color: Colors.brand.accentLight,
+    color: "rgba(255,255,255,0.65)",
   },
-  infoRow: {
+  infoBar: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
     backgroundColor: "#0D1B3E",
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
   channelAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: Colors.brand.primaryLight,
     alignItems: "center",
     justifyContent: "center",
@@ -282,42 +340,55 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_400Regular",
     fontSize: 11,
     color: Colors.brand.midGray,
-    marginTop: 2,
+    marginTop: 1,
   },
   watchBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    backgroundColor: Colors.brand.primaryLight,
+    backgroundColor: "#FF0000",
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingHorizontal: 11,
+    paddingVertical: 8,
   },
-  watchText: {
+  watchBtnText: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 11,
     color: Colors.brand.white,
   },
-  subscribeRow: {
+  subscribeStrip: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: "rgba(255,255,255,0.09)",
+  },
+  subscribeLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
   },
   subscribeText: {
-    flex: 1,
     fontFamily: "Poppins_400Regular",
     fontSize: 12,
     color: Colors.brand.midGray,
-    lineHeight: 17,
+    flex: 1,
   },
   subscribeBold: {
     fontFamily: "Poppins_600SemiBold",
     color: Colors.brand.accentLight,
+  },
+  subscribeArrow: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
