@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
+import LabVideoCard from "@/components/LabVideoCard";
 import AboutSection from "@/components/AboutSection";
 import ClassesSection from "@/components/ClassesSection";
 import ProjectSection from "@/components/ProjectSection";
@@ -104,6 +105,7 @@ export default function HomeScreen() {
           }
         >
           <HeroSection onExploreNotes={() => navigateToSection("classes")} />
+          <LabVideoCard />
         </View>
 
         <View

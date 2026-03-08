@@ -30,18 +30,26 @@ const CONTACT_ITEMS = [
   {
     icon: "logo-youtube" as const,
     label: "YouTube",
-    value: "KashurTechMir Channel",
-    action: () =>
-      Alert.alert("YouTube", "YouTube channel link coming soon!"),
+    value: "@kashurtechmir",
+    action: () => Linking.openURL("https://youtube.com/@kashurtechmir"),
     color: "#FF0000",
   },
   {
     icon: "logo-facebook" as const,
     label: "Facebook",
     value: "KashurTechMir Page",
-    action: () =>
-      Alert.alert("Facebook", "Facebook page link coming soon!"),
+    action: () => Linking.openURL("https://www.facebook.com/share/17uTPusyFv/"),
     color: "#1877F2",
+  },
+  {
+    icon: "logo-instagram" as const,
+    label: "Instagram",
+    value: "@tahir_hanief_mir",
+    action: () =>
+      Linking.openURL(
+        "https://www.instagram.com/tahir_hanief_mir?igsh=YTg0ajU2cHFpZjI3"
+      ),
+    color: "#E1306C",
   },
 ];
 
@@ -104,7 +112,7 @@ export default function ContactSection() {
               <Text style={styles.contactValue}>{item.value}</Text>
             </View>
             <Ionicons
-              name="chevron-forward"
+              name="open-outline"
               size={16}
               color={Colors.brand.midGray}
             />

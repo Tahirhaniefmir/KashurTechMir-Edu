@@ -134,6 +134,7 @@ export default function HeroSection({ onExploreNotes }: Props) {
 
           <View style={styles.founderInfo}>
             <Text style={styles.founderName}>Tahir Hanief Mir</Text>
+            <Text style={styles.founderUniversity}>(Osmania University Hyderabad)</Text>
             <View style={styles.founderRoleRow}>
               <View style={styles.roleDot} />
               <Text style={styles.founderRole}>Founder & Educator</Text>
@@ -330,6 +331,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: Colors.brand.white,
     lineHeight: 22,
+  },
+  founderUniversity: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 10,
+    color: "#5BC4FA",
+    lineHeight: 15,
+    marginTop: -2,
   },
   founderRoleRow: {
     flexDirection: "row",
