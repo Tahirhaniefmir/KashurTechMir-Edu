@@ -5,14 +5,25 @@ import {
   StyleSheet,
   Pressable,
   Alert,
-  ScrollView,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/colors";
+import { getApiUrl } from "@/lib/query-client";
 
 const CLASSES = [6, 7, 8, 9, 10, 11, 12];
 
 type BoardType = "NCERT" | "CBSE";
+
+const CLASS12_PHYSICS_PDFS = [
+  {
+    id: "semiconductors",
+    title: "Power Semiconductor Devices",
+    chapter: "Chapter 1",
+    pages: "~50 pages",
+    path: "/assets/pdfs/semiconductors-class12-physics.pdf",
+  },
+];
 
 export default function ClassesSection() {
   const [activeBoard, setActiveBoard] = useState<BoardType>("NCERT");
@@ -120,6 +131,18 @@ function ClassCard({
     return ["Mathematics", "Physics", "Chemistry", "Biology", "English", "CS"];
   };
 
+  const openPdf = (path: string) => {
+    try {
+      const base = getApiUrl();
+      const url = new URL(path, base).toString();
+      Linking.openURL(url);
+    } catch {
+      Alert.alert("Error", "Could not open the PDF. Please try again.");
+    }
+  };
+
+  const has12PhysicsPdfs = cls === 12;
+
   return (
     <View style={styles.classCard}>
       <Pressable
@@ -135,8 +158,17 @@ function ClassCard({
         </View>
         <View style={styles.classInfo}>
           <Text style={styles.className}>Class {cls}</Text>
-          <Text style={styles.classBoard}>{board} · {getSubjects(cls).length} Subjects</Text>
+          <Text style={styles.classBoard}>
+            {board} · {getSubjects(cls).length} Subjects
+            {has12PhysicsPdfs ? " · 1 PDF" : ""}
+          </Text>
         </View>
+        {has12PhysicsPdfs && (
+          <View style={styles.pdfAvailBadge}>
+            <Ionicons name="document" size={10} color="#27AE60" />
+            <Text style={styles.pdfAvailText}>PDF</Text>
+          </View>
+        )}
         <Ionicons
           name={isExpanded ? "chevron-up" : "chevron-down"}
           size={20}
@@ -146,13 +178,62 @@ function ClassCard({
 
       {isExpanded && (
         <View style={styles.classBody}>
+          {/* Subjects */}
           <View style={styles.subjectsRow}>
             {getSubjects(cls).map((sub) => (
-              <View key={sub} style={styles.subjectChip}>
-                <Text style={styles.subjectChipText}>{sub}</Text>
+              <View
+                key={sub}
+                style={[
+                  styles.subjectChip,
+                  sub === "Physics" && has12PhysicsPdfs && styles.subjectChipHighlight,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.subjectChipText,
+                    sub === "Physics" && has12PhysicsPdfs && styles.subjectChipTextHighlight,
+                  ]}
+                >
+                  {sub}
+                </Text>
               </View>
             ))}
           </View>
+
+          {/* Class 12 Physics PDFs */}
+          {has12PhysicsPdfs && (
+            <View style={styles.pdfSection}>
+              <View style={styles.pdfSectionHeader}>
+                <Ionicons name="book" size={14} color={Colors.brand.primaryLight} />
+                <Text style={styles.pdfSectionTitle}>Physics Notes (Available)</Text>
+              </View>
+              {CLASS12_PHYSICS_PDFS.map((pdf) => (
+                <Pressable
+                  key={pdf.id}
+                  onPress={() => openPdf(pdf.path)}
+                  style={({ pressed }) => [
+                    styles.pdfCard,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <View style={styles.pdfIconWrap}>
+                    <Ionicons name="document-text" size={22} color="#EB4335" />
+                  </View>
+                  <View style={styles.pdfMeta}>
+                    <Text style={styles.pdfTitle}>{pdf.title}</Text>
+                    <Text style={styles.pdfSub}>
+                      {pdf.chapter} · {pdf.pages}
+                    </Text>
+                  </View>
+                  <View style={styles.pdfDownloadBtn}>
+                    <Ionicons name="download" size={16} color={Colors.brand.white} />
+                  </View>
+                </Pressable>
+              ))}
+            </View>
+          )}
+
+          {/* Action buttons */}
           <View style={styles.actionRow}>
             <Pressable
               onPress={() => onDownload(cls, "Notes")}
@@ -306,6 +387,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.brand.midGray,
   },
+  pdfAvailBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    backgroundColor: "rgba(39,174,96,0.12)",
+    borderRadius: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderWidth: 1,
+    borderColor: "rgba(39,174,96,0.25)",
+  },
+  pdfAvailText: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 9,
+    color: "#27AE60",
+  },
   classBody: {
     padding: 14,
     paddingTop: 12,
@@ -323,11 +420,77 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: Colors.brand.accentLight,
   },
+  subjectChipHighlight: {
+    backgroundColor: Colors.brand.primary,
+  },
   subjectChipText: {
     fontFamily: "Poppins_500Medium",
     fontSize: 11,
     color: Colors.brand.primaryLight,
   },
+  subjectChipTextHighlight: {
+    color: Colors.brand.white,
+  },
+
+  /* PDF section */
+  pdfSection: {
+    gap: 8,
+  },
+  pdfSectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  pdfSectionTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 12,
+    color: Colors.brand.primaryLight,
+  },
+  pdfCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: Colors.brand.white,
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: Colors.brand.cardBorder,
+  },
+  pdfIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "rgba(235,67,53,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  pdfMeta: {
+    flex: 1,
+  },
+  pdfTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: Colors.brand.darkText,
+    lineHeight: 18,
+  },
+  pdfSub: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 11,
+    color: Colors.brand.midGray,
+    marginTop: 2,
+  },
+  pdfDownloadBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: Colors.brand.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+
+  /* Action buttons */
   actionRow: {
     flexDirection: "row",
     gap: 10,

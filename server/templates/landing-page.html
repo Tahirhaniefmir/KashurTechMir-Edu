@@ -1641,11 +1641,42 @@
     renderClasses();
   }
 
+  const CLASS12_PDFS = [
+    {
+      title: 'Power Semiconductor Devices',
+      chapter: 'Chapter 1 · Physics',
+      pages: '~50 pages',
+      url: '/assets/pdfs/semiconductors-class12-physics.pdf',
+    }
+  ];
+
   function renderClasses() {
     const grid = document.getElementById('classesGrid');
     grid.innerHTML = '';
     for (let cls = 6; cls <= 12; cls++) {
       const subs = SUBJECTS[cls];
+      const hasPdfs = cls === 12;
+      const pdfBadge = hasPdfs ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(39,174,96,0.12);border:1px solid rgba(39,174,96,0.25);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#27AE60;margin-right:8px;">📄 PDF</span>` : '';
+      const physicsChips = subs.map(s => {
+        const isPhysics = s === 'Physics' && hasPdfs;
+        return `<span class="subject-chip" style="${isPhysics ? 'background:var(--primary);color:white;' : ''}">${s}</span>`;
+      }).join('');
+      const pdfSection = hasPdfs ? `
+        <div style="margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+            <span style="font-size:13px;">📘</span>
+            <span style="font-size:12px;font-weight:600;color:var(--primary-light);">Physics Notes (Available)</span>
+          </div>
+          ${CLASS12_PDFS.map(pdf => `
+          <a href="${pdf.url}" target="_blank" style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--card-border);border-radius:12px;padding:12px;text-decoration:none;transition:box-shadow 0.2s;margin-bottom:6px;" onmouseover="this.style.boxShadow='0 4px 16px rgba(10,36,99,0.1)'" onmouseout="this.style.boxShadow='none'">
+            <div style="width:44px;height:44px;border-radius:12px;background:rgba(235,67,53,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📄</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:13px;font-weight:600;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${pdf.title}</div>
+              <div style="font-size:11px;color:var(--mid-gray);margin-top:2px;">${pdf.chapter} · ${pdf.pages}</div>
+            </div>
+            <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:white;font-size:16px;">⬇</div>
+          </a>`).join('')}
+        </div>` : '';
       const card = document.createElement('div');
       card.className = 'class-card';
       card.innerHTML = `
@@ -1653,14 +1684,13 @@
           <div class="class-num-badge">${cls}</div>
           <div class="class-meta">
             <strong>Class ${cls}</strong>
-            <span>${activeBoard} · ${subs.length} Subjects</span>
+            <span>${pdfBadge}${activeBoard} · ${subs.length} Subjects</span>
           </div>
           <span class="class-chevron" id="chev${cls}">▾</span>
         </div>
         <div class="class-body" id="body${cls}">
-          <div class="subjects-row">
-            ${subs.map(s=>`<span class="subject-chip">${s}</span>`).join('')}
-          </div>
+          <div class="subjects-row">${physicsChips}</div>
+          ${pdfSection}
           <div class="class-actions">
             <button class="btn-notes" onclick="showToast('Notes for Class ${cls} (${activeBoard}) coming soon!')">📄 View Notes</button>
             <button class="btn-paper" onclick="showToast('PYQ Papers for Class ${cls} (${activeBoard}) coming soon!')">⬇️ Free Download PYQ</button>
