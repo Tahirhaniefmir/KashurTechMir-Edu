@@ -621,17 +621,16 @@
     /* ── CLASSES ── */
     .board-toggle {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 24px;
     }
     .board-btn {
-      flex: 1;
-      max-width: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 20px;
+      padding: 10px 18px;
       border-radius: 12px;
       border: 2px solid var(--primary-light);
       background: var(--white);
@@ -641,11 +640,144 @@
       color: var(--primary-light);
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .board-btn.active {
       background: var(--primary);
       border-color: var(--primary);
       color: var(--white);
+    }
+    .board-btn:hover:not(.active) { background: var(--accent-light); }
+    /* Competitive exam section */
+    .comp-banner, .islamic-banner {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--accent-light);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+    }
+    .islamic-banner { background: #F0EAF8; border-color: #D4C5EA; }
+    .comp-banner-icon, .islamic-banner-icon {
+      font-size: 32px; flex-shrink: 0;
+    }
+    .comp-banner-title { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 2px; }
+    .islamic-banner-title { font-size: 16px; font-weight: 700; color: #4A1D8A; margin-bottom: 2px; }
+    .comp-banner-sub, .islamic-banner-sub { font-size: 13px; color: var(--body-text); }
+    .comp-grid, .islamic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+    .comp-card {
+      background: var(--white);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .comp-card-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .comp-card-header:hover { background: var(--off-white); }
+    .comp-icon-badge {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .comp-card-meta { flex: 1; }
+    .comp-card-title { font-size: 15px; font-weight: 600; color: var(--dark-text); display: block; }
+    .comp-card-desc { font-size: 12px; color: var(--mid-gray); }
+    .comp-card-body {
+      display: none; padding: 16px;
+      background: var(--off-white);
+      border-top: 1px solid var(--light-gray);
+    }
+    .comp-card-body.open { display: block; }
+    .coming-soon-box {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; gap: 8px; text-align: center;
+    }
+    .coming-soon-icon { font-size: 36px; }
+    .coming-soon-title { font-size: 14px; font-weight: 700; color: var(--primary-light); }
+    .coming-soon-desc { font-size: 12px; color: var(--mid-gray); max-width: 280px; line-height: 1.6; }
+    /* Islamic card */
+    .islamic-card {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--white);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .islamic-card-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: #F0EAF8;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
+    }
+    .islamic-card-title { font-size: 16px; font-weight: 700; color: var(--dark-text); }
+    .islamic-card-sub { font-size: 13px; color: var(--mid-gray); margin-top: 2px; }
+    .soon-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--accent-light);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 11px; font-weight: 600; color: var(--primary-light);
+      margin-top: 6px;
+    }
+    .islamic-more-note {
+      display: flex; align-items: flex-start; gap: 8px;
+      background: var(--off-white);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px; color: var(--mid-gray); line-height: 1.6;
+    }
+    /* Science PDF list */
+    .sci-toggle {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-top: 1px solid var(--light-gray);
+      transition: background 0.15s;
+    }
+    .sci-toggle:hover { background: var(--accent-light); }
+    .sci-toggle-label { flex: 1; font-size: 12px; font-weight: 600; color: var(--primary-light); }
+    .sci-pdf-count {
+      background: var(--primary); color: var(--white);
+      font-size: 10px; font-weight: 700;
+      border-radius: 6px; padding: 2px 8px;
+    }
+    .sci-pdf-list { display: none; border-top: 1px solid var(--light-gray); }
+    .sci-pdf-list.open { display: block; }
+    .sci-pdf-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--light-gray);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .sci-pdf-row:hover { background: var(--off-white); }
+    .sci-pdf-row.disabled { pointer-events: none; opacity: 0.5; }
+    .ch-badge {
+      width: 40px; height: 32px;
+      border-radius: 8px;
+      background: var(--primary); color: var(--white);
+      font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ch-badge.gray { background: var(--mid-gray); }
+    .sci-pdf-title { flex: 1; font-size: 12px; font-weight: 500; color: var(--dark-text); line-height: 1.4; }
+    .dl-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      background: var(--primary); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .soon-badge {
+      border: 1px solid var(--mid-gray); border-radius: 6px;
+      padding: 3px 8px; font-size: 10px; font-weight: 600; color: var(--mid-gray);
     }
     .classes-grid {
       display: grid;
@@ -1354,10 +1486,14 @@
 
     <div class="board-toggle fade-up">
       <button class="board-btn active" id="ncertBtn" onclick="switchBoard('NCERT')">📘 NCERT Board</button>
-      <button class="board-btn" id="cbseBtn" onclick="switchBoard('CBSE')">📙 CBSE Board (J&amp;K)</button>
+      <button class="board-btn" id="cbseBtn" onclick="switchBoard('CBSE')">📙 CBSE (J&amp;K)</button>
+      <button class="board-btn" id="compBtn" onclick="switchBoard('COMPETITIVE')">🏆 Competitive Exam</button>
+      <button class="board-btn" id="islamicBtn" onclick="switchBoard('ISLAMIC')">🌙 Islamic Notes</button>
     </div>
 
-    <div class="classes-grid" id="classesGrid"></div>
+    <div id="classesGrid"></div>
+    <div id="competitiveGrid" style="display:none;"></div>
+    <div id="islamicGrid" style="display:none;"></div>
   </div>
 </section>
 
@@ -1632,51 +1768,113 @@
     11:['Mathematics','Physics','Chemistry','Biology','English','CS / IT'],
     12:['Mathematics','Physics','Chemistry','Biology','English','CS / IT'],
   };
+
+  const CLASS6_SCIENCE_PDFS = [
+    { ch:1,  title:'Food — Where Does It Come From?',              url:'/assets/pdfs/class6-science-ch01-food-where-does-it-come-from.pdf' },
+    { ch:2,  title:'Components of Food',                           url:'/assets/pdfs/class6-science-ch02-components-of-food.pdf' },
+    { ch:3,  title:'Fibre to Fabric',                              url:'/assets/pdfs/class6-science-ch03-fibre-to-fabric.pdf' },
+    { ch:4,  title:'Sorting Materials into Groups',                url:'/assets/pdfs/class6-science-ch04-sorting-materials-into-groups.pdf' },
+    { ch:5,  title:'Separation of Substances',                     url:'/assets/pdfs/class6-science-ch05-separation-of-substances.pdf' },
+    { ch:6,  title:'Changes Around Us',                            url:'/assets/pdfs/class6-science-ch06-changes-around-us.pdf' },
+    { ch:7,  title:'Getting to Know Plants',                       url:'/assets/pdfs/class6-science-ch07-getting-to-know-plants.pdf' },
+    { ch:8,  title:'Body Movements',                               url:'/assets/pdfs/class6-science-ch08-body-movements.pdf' },
+    { ch:9,  title:'The Living Organisms and Their Surroundings',  url:'/assets/pdfs/class6-science-ch09-living-organisms-and-surroundings.pdf' },
+    { ch:10, title:'Motion and Measurement of Substances',         url:null },
+    { ch:11, title:'Light, Shadows and Reflections',               url:'/assets/pdfs/class6-science-ch11-light-shadows-reflections.pdf' },
+    { ch:12, title:'Electricity and Circuits',                     url:'/assets/pdfs/class6-science-ch12-electricity-and-circuits.pdf' },
+    { ch:13, title:'Fun with Magnets',                             url:'/assets/pdfs/class6-science-ch13-fun-with-magnets.pdf' },
+    { ch:14, title:'Water',                                        url:'/assets/pdfs/class6-science-ch14-water.pdf' },
+    { ch:15, title:'Air Around Us',                                url:'/assets/pdfs/class6-science-ch15-air-around-us.pdf' },
+    { ch:16, title:'Garbage in, Garbage out',                      url:'/assets/pdfs/class6-science-ch16-garbage-in-garbage-out.pdf' },
+  ];
+
+  const CLASS12_PDFS = [
+    { title:'Power Semiconductor Devices', chapter:'Chapter 1 · Physics', pages:'~50 pages', url:'/assets/pdfs/semiconductors-class12-physics.pdf' }
+  ];
+
+  const COMPETITIVE_SECTIONS = [
+    { id:'quant',    icon:'🔢', title:'Quantitative Aptitude',  desc:'Number systems, arithmetic, algebra, geometry & data interpretation' },
+    { id:'verbal',   icon:'💬', title:'Verbal Ability',          desc:'Reading comprehension, vocabulary, synonyms & antonyms' },
+    { id:'reason',   icon:'🧩', title:'Reasoning',               desc:'Logical, analytical, verbal & non-verbal reasoning' },
+    { id:'computer', icon:'💻', title:'Computer Fundamentals',  desc:'Hardware, software, OS, networking & MS Office basics' },
+    { id:'english',  icon:'📝', title:'English',                 desc:'Grammar, comprehension, essay writing & vocabulary' },
+  ];
+
   let activeBoard = 'NCERT';
 
   function switchBoard(board) {
     activeBoard = board;
-    document.getElementById('ncertBtn').classList.toggle('active', board === 'NCERT');
-    document.getElementById('cbseBtn').classList.toggle('active', board === 'CBSE');
-    renderClasses();
+    ['ncertBtn','cbseBtn','compBtn','islamicBtn'].forEach(id => {
+      document.getElementById(id).classList.remove('active');
+    });
+    const map = { NCERT:'ncertBtn', CBSE:'cbseBtn', COMPETITIVE:'compBtn', ISLAMIC:'islamicBtn' };
+    document.getElementById(map[board]).classList.add('active');
+
+    document.getElementById('classesGrid').style.display    = (board === 'NCERT' || board === 'CBSE') ? '' : 'none';
+    document.getElementById('competitiveGrid').style.display = board === 'COMPETITIVE' ? '' : 'none';
+    document.getElementById('islamicGrid').style.display     = board === 'ISLAMIC'     ? '' : 'none';
+
+    if (board === 'NCERT' || board === 'CBSE') renderClasses();
+    if (board === 'COMPETITIVE') renderCompetitive();
+    if (board === 'ISLAMIC')     renderIslamic();
   }
 
-  const CLASS12_PDFS = [
-    {
-      title: 'Power Semiconductor Devices',
-      chapter: 'Chapter 1 · Physics',
-      pages: '~50 pages',
-      url: '/assets/pdfs/semiconductors-class12-physics.pdf',
-    }
-  ];
-
+  /* ── CLASS CARDS (NCERT/CBSE) ── */
   function renderClasses() {
     const grid = document.getElementById('classesGrid');
+    grid.className = 'classes-grid';
     grid.innerHTML = '';
     for (let cls = 6; cls <= 12; cls++) {
       const subs = SUBJECTS[cls];
-      const hasPdfs = cls === 12;
-      const pdfBadge = hasPdfs ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(39,174,96,0.12);border:1px solid rgba(39,174,96,0.25);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#27AE60;margin-right:8px;">📄 PDF</span>` : '';
-      const physicsChips = subs.map(s => {
-        const isPhysics = s === 'Physics' && hasPdfs;
-        return `<span class="subject-chip" style="${isPhysics ? 'background:var(--primary);color:white;' : ''}">${s}</span>`;
+      const has6Sci  = cls === 6;
+      const has12Phy = cls === 12;
+      const hasPdf   = has6Sci || has12Phy;
+
+      const pdfBadge = hasPdf
+        ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(39,174,96,0.12);border:1px solid rgba(39,174,96,0.25);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#27AE60;margin-right:6px;">📄 ${has6Sci ? '15 PDFs' : '1 PDF'}</span>` : '';
+
+      const subjectChips = subs.map(s => {
+        const hl = (s === 'Science' && has6Sci) || (s === 'Physics' && has12Phy);
+        return `<span class="subject-chip" style="${hl ? 'background:var(--primary);color:white;' : ''}">${s}</span>`;
       }).join('');
-      const pdfSection = hasPdfs ? `
-        <div style="margin-bottom:4px;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-            <span style="font-size:13px;">📘</span>
-            <span style="font-size:12px;font-weight:600;color:var(--primary-light);">Physics Notes (Available)</span>
-          </div>
-          ${CLASS12_PDFS.map(pdf => `
-          <a href="${pdf.url}" target="_blank" style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--card-border);border-radius:12px;padding:12px;text-decoration:none;transition:box-shadow 0.2s;margin-bottom:6px;" onmouseover="this.style.boxShadow='0 4px 16px rgba(10,36,99,0.1)'" onmouseout="this.style.boxShadow='none'">
-            <div style="width:44px;height:44px;border-radius:12px;background:rgba(235,67,53,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📄</div>
-            <div style="flex:1;min-width:0;">
-              <div style="font-size:13px;font-weight:600;color:var(--dark-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${pdf.title}</div>
-              <div style="font-size:11px;color:var(--mid-gray);margin-top:2px;">${pdf.chapter} · ${pdf.pages}</div>
-            </div>
-            <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:white;font-size:16px;">⬇</div>
-          </a>`).join('')}
+
+      const scienceSection = has6Sci ? `
+        <div class="sci-toggle" onclick="toggleSciPdf(6)">
+          <span>🔬</span>
+          <span class="sci-toggle-label">Science Notes — All Chapters</span>
+          <span class="sci-pdf-count">15 PDFs</span>
+          <span id="sciChev6">▾</span>
+        </div>
+        <div class="sci-pdf-list" id="sciList6">
+          ${CLASS6_SCIENCE_PDFS.map(p => p.url
+            ? `<a class="sci-pdf-row" href="${p.url}" target="_blank">
+                <div class="ch-badge">Ch ${p.ch}</div>
+                <span class="sci-pdf-title">${p.title}</span>
+                <div class="dl-icon">⬇</div>
+               </a>`
+            : `<div class="sci-pdf-row disabled">
+                <div class="ch-badge gray">Ch ${p.ch}</div>
+                <span class="sci-pdf-title" style="color:var(--mid-gray)">${p.title}</span>
+                <span class="soon-badge">Soon</span>
+               </div>`
+          ).join('')}
         </div>` : '';
+
+      const physicsSection = has12Phy ? `
+        <div style="padding:10px 0 6px;display:flex;align-items:center;gap:6px;">
+          <span style="font-size:13px;">📘</span>
+          <span style="font-size:12px;font-weight:600;color:var(--primary-light);">Physics Notes (Available)</span>
+        </div>
+        ${CLASS12_PDFS.map(pdf => `
+        <a href="${pdf.url}" target="_blank" style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--card-border);border-radius:12px;padding:12px;text-decoration:none;transition:box-shadow 0.2s;margin-bottom:6px;" onmouseover="this.style.boxShadow='0 4px 16px rgba(10,36,99,0.1)'" onmouseout="this.style.boxShadow='none'">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(235,67,53,0.08);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px;">📄</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--dark-text);">${pdf.title}</div>
+            <div style="font-size:11px;color:var(--mid-gray);margin-top:2px;">${pdf.chapter} · ${pdf.pages}</div>
+          </div>
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:white;font-size:16px;">⬇</div>
+        </a>`).join('')}` : '';
+
       const card = document.createElement('div');
       card.className = 'class-card';
       card.innerHTML = `
@@ -1689,11 +1887,12 @@
           <span class="class-chevron" id="chev${cls}">▾</span>
         </div>
         <div class="class-body" id="body${cls}">
-          <div class="subjects-row">${physicsChips}</div>
-          ${pdfSection}
-          <div class="class-actions">
-            <button class="btn-notes" onclick="showToast('Notes for Class ${cls} (${activeBoard}) coming soon!')">📄 View Notes</button>
-            <button class="btn-paper" onclick="showToast('PYQ Papers for Class ${cls} (${activeBoard}) coming soon!')">⬇️ Free Download PYQ</button>
+          <div class="subjects-row">${subjectChips}</div>
+          ${scienceSection}
+          ${physicsSection}
+          <div class="class-actions" style="margin-top:8px;">
+            <button class="btn-notes" onclick="showToast('Notes for Class ${cls} coming soon!')">📄 View Notes</button>
+            <button class="btn-paper" onclick="showToast('PYQ Papers for Class ${cls} coming soon!')">⬇️ Free Download PYQ</button>
           </div>
         </div>`;
       grid.appendChild(card);
@@ -1704,13 +1903,83 @@
     const body = document.getElementById('body' + cls);
     const chev = document.getElementById('chev' + cls);
     const isOpen = body.classList.contains('open');
-    // close all
     document.querySelectorAll('.class-body').forEach(b => b.classList.remove('open'));
     document.querySelectorAll('.class-chevron').forEach(c => c.textContent = '▾');
-    if (!isOpen) {
-      body.classList.add('open');
-      chev.textContent = '▴';
-    }
+    if (!isOpen) { body.classList.add('open'); chev.textContent = '▴'; }
+  }
+
+  function toggleSciPdf(cls) {
+    const list = document.getElementById('sciList' + cls);
+    const chev = document.getElementById('sciChev' + cls);
+    const isOpen = list.classList.contains('open');
+    list.classList.toggle('open', !isOpen);
+    chev.textContent = isOpen ? '▾' : '▴';
+  }
+
+  /* ── COMPETITIVE EXAM NOTES ── */
+  function renderCompetitive() {
+    const grid = document.getElementById('competitiveGrid');
+    grid.innerHTML = `
+      <div class="comp-banner">
+        <div class="comp-banner-icon">🏆</div>
+        <div>
+          <div class="comp-banner-title">Competitive Exam Notes</div>
+          <div class="comp-banner-sub">Comprehensive notes for government &amp; entrance exams</div>
+        </div>
+      </div>
+      <div class="comp-grid">
+        ${COMPETITIVE_SECTIONS.map(sec => `
+        <div class="comp-card">
+          <div class="comp-card-header" onclick="toggleComp('${sec.id}')">
+            <div class="comp-icon-badge">${sec.icon}</div>
+            <div class="comp-card-meta">
+              <span class="comp-card-title">${sec.title}</span>
+              <span class="comp-card-desc">${sec.desc}</span>
+            </div>
+            <span id="compChev_${sec.id}">▾</span>
+          </div>
+          <div class="comp-card-body" id="compBody_${sec.id}">
+            <div class="coming-soon-box">
+              <div class="coming-soon-icon">⏳</div>
+              <div class="coming-soon-title">Notes Coming Soon</div>
+              <div class="coming-soon-desc">${sec.title} notes are being prepared by our expert team. Check back soon!</div>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>`;
+  }
+
+  function toggleComp(id) {
+    const body = document.getElementById('compBody_' + id);
+    const chev = document.getElementById('compChev_' + id);
+    const isOpen = body.classList.contains('open');
+    document.querySelectorAll('.comp-card-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('[id^="compChev_"]').forEach(c => c.textContent = '▾');
+    if (!isOpen) { body.classList.add('open'); chev.textContent = '▴'; }
+  }
+
+  /* ── ISLAMIC NOTES ── */
+  function renderIslamic() {
+    const grid = document.getElementById('islamicGrid');
+    grid.innerHTML = `
+      <div class="islamic-banner">
+        <div class="islamic-banner-icon">🌙</div>
+        <div>
+          <div class="islamic-banner-title">Islamic Notes</div>
+          <div class="islamic-banner-sub">Quality Islamic study material for students</div>
+        </div>
+      </div>
+      <div class="islamic-card">
+        <div class="islamic-card-icon">🌙</div>
+        <div>
+          <div class="islamic-card-title">Al Mulakhas Al Fiqhi</div>
+          <div class="islamic-card-sub">Summarised Islamic Fiqh</div>
+          <div class="soon-pill">⏳ PDF Coming Soon</div>
+        </div>
+      </div>
+      <div class="islamic-more-note">
+        ℹ️ &nbsp;More Islamic study materials will be added. Contact us to suggest titles.
+      </div>`;
   }
 
   // ── MOBILE MENU ──
