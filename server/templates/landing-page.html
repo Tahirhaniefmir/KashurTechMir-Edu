@@ -732,6 +732,58 @@
       padding: 12px 14px;
       font-size: 12px; color: var(--mid-gray); line-height: 1.6;
     }
+    .isl-lang-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .isl-lang-btn {
+      padding: 8px 14px; border-radius: 10px;
+      border: 2px solid #D4C5EA; background: #fff;
+      font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 600; color: #4A1D8A;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .isl-lang-btn.active { background: #4A1D8A; border-color: #4A1D8A; color: #fff; }
+    .isl-lang-btn:hover:not(.active) { background: #F0EAF8; }
+    .isl-sub-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .isl-sub-card { border: 1px solid #D4C5EA; border-radius: 12px; overflow: hidden; background: #fff; }
+    .isl-sub-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px; cursor: pointer; transition: background 0.2s;
+    }
+    .isl-sub-header:hover { background: #FAF7FE; }
+    .isl-sub-icon {
+      font-size: 16px; width: 32px; height: 32px; border-radius: 8px;
+      background: #F0EAF8; display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+    }
+    .isl-sub-label { font-weight: 600; font-size: 14px; color: var(--dark-text); flex: 1; }
+    .isl-sub-count {
+      background: #4A1D8A; color: #fff;
+      border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 700;
+    }
+    .isl-sub-chev { color: var(--mid-gray); font-size: 13px; }
+    .isl-sub-body { display: none; border-top: 1px solid #EDE0F8; background: #FAF7FE; padding: 12px; }
+    .isl-sub-body.open { display: block; }
+    .isl-coming-soon {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; gap: 6px; text-align: center;
+    }
+    .isl-cs-icon { font-size: 32px; }
+    .isl-cs-title { font-weight: 700; font-size: 14px; color: #7A5DAA; }
+    .isl-cs-desc { font-size: 12px; color: var(--mid-gray); line-height: 1.6; max-width: 280px; }
+    .isl-pdf-row {
+      display: flex; align-items: center; gap: 12px;
+      background: #fff; border: 1px solid #D4C5EA;
+      border-radius: 10px; padding: 12px; margin-bottom: 8px;
+    }
+    .isl-pdf-icon { font-size: 22px; flex-shrink: 0; }
+    .isl-pdf-meta { flex: 1; }
+    .isl-pdf-title { font-weight: 600; font-size: 14px; color: var(--dark-text); }
+    .isl-pdf-sub { font-size: 12px; color: var(--mid-gray); margin-top: 2px; }
+    .isl-dl-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #4A1D8A; color: #fff; text-decoration: none;
+      border-radius: 8px; padding: 7px 12px; font-size: 12px; font-weight: 700;
+      flex-shrink: 0; transition: opacity 0.2s;
+    }
+    .isl-dl-btn:hover { opacity: 0.88; }
     /* Science PDF list */
     .sci-toggle {
       display: flex; align-items: center; gap: 8px;
@@ -1959,9 +2011,87 @@
   }
 
   /* ── ISLAMIC NOTES ── */
+  let islActiveLang = 'arabic';
+  let islOpenSub = 'aqeedah';
+
+  const ISLAMIC_BOOKS = {
+    arabic:   { label: 'Arabic Books',   sections: {
+      aqeedah:  { label: 'Aqeedah',          icon: '⭐', items: [
+        { title: 'Al Mulakhas Al Fiqhi', sub: 'Summarised Islamic Fiqh', url: '/assets/pdfs/islamic-arabic-aqeedah-al-mulakhas-al-fiqhi.pdf' },
+      ]},
+      language: { label: 'Language / Lugah', icon: '📖', items: [] },
+      quran:    { label: 'Quran',             icon: '📗', items: [] },
+      hadith:   { label: 'Hadith',            icon: '📜', items: [] },
+      tajweed:  { label: 'Tajweed',           icon: '🎵', items: [] },
+      prayers:  { label: 'Prayers / Salah',   icon: '🤲', items: [] },
+    }},
+    english:  { label: 'English Books',  sections: {
+      aqeedah:  { label: 'Aqeedah',          icon: '⭐', items: [] },
+      language: { label: 'Language',          icon: '📖', items: [] },
+      quran:    { label: 'Quran',             icon: '📗', items: [] },
+      hadith:   { label: 'Hadith',            icon: '📜', items: [] },
+      tajweed:  { label: 'Tajweed',           icon: '🎵', items: [] },
+      prayers:  { label: 'Prayers / Salah',   icon: '🤲', items: [] },
+    }},
+    urdu:     { label: 'Urdu Books',     sections: {
+      aqeedah:  { label: 'Aqeedah', icon: '⭐', items: [] },
+      language: { label: 'Zuban',   icon: '📖', items: [] },
+      quran:    { label: 'Quran',   icon: '📗', items: [] },
+      hadith:   { label: 'Hadith',  icon: '📜', items: [] },
+      tajweed:  { label: 'Tajweed', icon: '🎵', items: [] },
+      prayers:  { label: 'Namaz',   icon: '🤲', items: [] },
+    }},
+    kashmiri: { label: 'Kashmiri Books', sections: {
+      aqeedah:  { label: 'Aqeedah', icon: '⭐', items: [] },
+      language: { label: 'Zuban',   icon: '📖', items: [] },
+      quran:    { label: 'Quran',   icon: '📗', items: [] },
+      hadith:   { label: 'Hadith',  icon: '📜', items: [] },
+      tajweed:  { label: 'Tajweed', icon: '🎵', items: [] },
+      prayers:  { label: 'Namaz',   icon: '🤲', items: [] },
+    }},
+  };
+
   function renderIslamic() {
-    const grid = document.getElementById('islamicGrid');
-    grid.innerHTML = `
+    document.getElementById('islamicGrid').innerHTML = buildIslamicHTML();
+  }
+
+  function buildIslamicHTML() {
+    const langData = ISLAMIC_BOOKS[islActiveLang];
+
+    const langTabsHTML = Object.entries(ISLAMIC_BOOKS).map(([key, val]) =>
+      `<button class="isl-lang-btn${key === islActiveLang ? ' active' : ''}" onclick="islSetLang('${key}')">${val.label}</button>`
+    ).join('');
+
+    const subsHTML = Object.entries(langData.sections).map(([key, sec]) => {
+      const isOpen = key === islOpenSub;
+      const bodyHTML = sec.items.length === 0
+        ? `<div class="isl-coming-soon">
+             <div class="isl-cs-icon">⏳</div>
+             <div class="isl-cs-title">Coming Soon</div>
+             <div class="isl-cs-desc">Books will be added soon. Contact us to suggest titles.</div>
+           </div>`
+        : sec.items.map(item =>
+            `<div class="isl-pdf-row">
+               <div class="isl-pdf-icon">📄</div>
+               <div class="isl-pdf-meta">
+                 <div class="isl-pdf-title">${item.title}</div>
+                 <div class="isl-pdf-sub">${item.sub}</div>
+               </div>
+               <a class="isl-dl-btn" href="${item.url}" target="_blank" download>⬇️ PDF</a>
+             </div>`).join('');
+      return `
+        <div class="isl-sub-card">
+          <div class="isl-sub-header" onclick="islToggleSub('${key}')">
+            <div class="isl-sub-icon">${sec.icon}</div>
+            <span class="isl-sub-label">${sec.label}</span>
+            ${sec.items.length > 0 ? `<span class="isl-sub-count">${sec.items.length}</span>` : ''}
+            <span class="isl-sub-chev">${isOpen ? '▴' : '▾'}</span>
+          </div>
+          <div class="isl-sub-body${isOpen ? ' open' : ''}">${bodyHTML}</div>
+        </div>`;
+    }).join('');
+
+    return `
       <div class="islamic-banner">
         <div class="islamic-banner-icon">🌙</div>
         <div>
@@ -1969,17 +2099,20 @@
           <div class="islamic-banner-sub">Quality Islamic study material for students</div>
         </div>
       </div>
-      <div class="islamic-card">
-        <div class="islamic-card-icon">🌙</div>
-        <div>
-          <div class="islamic-card-title">Al Mulakhas Al Fiqhi</div>
-          <div class="islamic-card-sub">Summarised Islamic Fiqh</div>
-          <div class="soon-pill">⏳ PDF Coming Soon</div>
-        </div>
-      </div>
-      <div class="islamic-more-note">
-        ℹ️ &nbsp;More Islamic study materials will be added. Contact us to suggest titles.
-      </div>`;
+      <div class="isl-lang-row">${langTabsHTML}</div>
+      <div class="isl-sub-list">${subsHTML}</div>
+      <div class="islamic-more-note">ℹ️ &nbsp;More Islamic study materials will be added. Contact us to suggest titles.</div>`;
+  }
+
+  function islSetLang(lang) {
+    islActiveLang = lang;
+    islOpenSub = 'aqeedah';
+    renderIslamic();
+  }
+
+  function islToggleSub(key) {
+    islOpenSub = islOpenSub === key ? null : key;
+    renderIslamic();
   }
 
   // ── MOBILE MENU ──

@@ -47,8 +47,57 @@ const COMPETITIVE_SECTIONS = [
   { id: "english",  title: "English",                  icon: "language-outline" as const,     desc: "Grammar, comprehension, essay writing & vocabulary" },
 ];
 
-const ISLAMIC_PDFS = [
-  { id: "mulakhas", title: "Al Mulakhas Al Fiqhi", subtitle: "Summarised Islamic Fiqh", comingSoon: false, path: null },
+type IslamicItem = { id: string; title: string; subtitle: string; path: string | null };
+type IslamicSubSec = { key: string; label: string; icon: keyof typeof Ionicons.glyphMap; items: IslamicItem[] };
+type IslamicLangType = { key: string; label: string; sections: IslamicSubSec[] };
+
+const ISLAMIC_BOOKS: IslamicLangType[] = [
+  {
+    key: "arabic", label: "Arabic Books",
+    sections: [
+      { key: "aqeedah",  label: "Aqeedah",          icon: "star-outline",          items: [
+        { id: "mulakhas", title: "Al Mulakhas Al Fiqhi", subtitle: "Summarised Islamic Fiqh", path: "/assets/pdfs/islamic-arabic-aqeedah-al-mulakhas-al-fiqhi.pdf" },
+      ]},
+      { key: "language", label: "Language / Lugah",  icon: "language-outline",      items: [] },
+      { key: "quran",    label: "Quran",              icon: "book-outline",          items: [] },
+      { key: "hadith",   label: "Hadith",             icon: "document-text-outline", items: [] },
+      { key: "tajweed",  label: "Tajweed",            icon: "musical-notes-outline", items: [] },
+      { key: "prayers",  label: "Prayers / Salah",    icon: "hand-left-outline",     items: [] },
+    ],
+  },
+  {
+    key: "english", label: "English Books",
+    sections: [
+      { key: "aqeedah",  label: "Aqeedah",          icon: "star-outline",          items: [] },
+      { key: "language", label: "Language",          icon: "language-outline",      items: [] },
+      { key: "quran",    label: "Quran",              icon: "book-outline",          items: [] },
+      { key: "hadith",   label: "Hadith",             icon: "document-text-outline", items: [] },
+      { key: "tajweed",  label: "Tajweed",            icon: "musical-notes-outline", items: [] },
+      { key: "prayers",  label: "Prayers / Salah",    icon: "hand-left-outline",     items: [] },
+    ],
+  },
+  {
+    key: "urdu", label: "Urdu Books",
+    sections: [
+      { key: "aqeedah",  label: "Aqeedah",          icon: "star-outline",          items: [] },
+      { key: "language", label: "Zuban",             icon: "language-outline",      items: [] },
+      { key: "quran",    label: "Quran",              icon: "book-outline",          items: [] },
+      { key: "hadith",   label: "Hadith",             icon: "document-text-outline", items: [] },
+      { key: "tajweed",  label: "Tajweed",            icon: "musical-notes-outline", items: [] },
+      { key: "prayers",  label: "Namaz",              icon: "hand-left-outline",     items: [] },
+    ],
+  },
+  {
+    key: "kashmiri", label: "Kashmiri Books",
+    sections: [
+      { key: "aqeedah",  label: "Aqeedah",          icon: "star-outline",          items: [] },
+      { key: "language", label: "Zuban",             icon: "language-outline",      items: [] },
+      { key: "quran",    label: "Quran",              icon: "book-outline",          items: [] },
+      { key: "hadith",   label: "Hadith",             icon: "document-text-outline", items: [] },
+      { key: "tajweed",  label: "Tajweed",            icon: "musical-notes-outline", items: [] },
+      { key: "prayers",  label: "Namaz",              icon: "hand-left-outline",     items: [] },
+    ],
+  },
 ];
 
 const BOARD_TABS: { key: BoardType; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
@@ -399,33 +448,105 @@ function CompetitiveSection({
 /* ─── Islamic Notes ─── */
 
 function IslamicSection() {
+  const [activeLang, setActiveLang] = useState("arabic");
+  const [openSub, setOpenSub] = useState<string | null>("aqeedah");
+  const langData = ISLAMIC_BOOKS.find((l) => l.key === activeLang)!;
+
   return (
     <View style={styles.islamicWrap}>
+      {/* Banner */}
       <View style={styles.islamicBanner}>
-        <Ionicons name="moon" size={28} color={Colors.brand.primary} />
+        <Ionicons name="moon" size={28} color="#4A1D8A" />
         <View style={{ flex: 1 }}>
           <Text style={styles.islamicBannerTitle}>Islamic Notes</Text>
-          <Text style={styles.islamicBannerSub}>
-            Quality Islamic study material for students
-          </Text>
+          <Text style={styles.islamicBannerSub}>Quality Islamic study material for students</Text>
         </View>
       </View>
 
-      {ISLAMIC_PDFS.map((item) => (
-        <View key={item.id} style={styles.islamicCard}>
-          <View style={styles.islamicCardIcon}>
-            <Ionicons name="moon" size={28} color={Colors.brand.primary} />
-          </View>
-          <View style={styles.islamicCardMeta}>
-            <Text style={styles.islamicCardTitle}>{item.title}</Text>
-            <Text style={styles.islamicCardSub}>{item.subtitle}</Text>
-            <View style={styles.comingSoonPill}>
-              <Ionicons name="time-outline" size={12} color={Colors.brand.primaryLight} />
-              <Text style={styles.comingSoonPillText}>PDF Coming Soon</Text>
+      {/* Language tabs */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.islLangScroll} contentContainerStyle={styles.islLangRow}>
+        {ISLAMIC_BOOKS.map((lang) => (
+          <Pressable
+            key={lang.key}
+            onPress={() => { setActiveLang(lang.key); setOpenSub("aqeedah"); }}
+            style={[styles.islLangBtn, activeLang === lang.key && styles.islLangBtnActive]}
+          >
+            <Text style={[styles.islLangLabel, activeLang === lang.key && styles.islLangLabelActive]}>
+              {lang.label}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+
+      {/* Subsection accordion cards */}
+      <View style={styles.islSubList}>
+        {langData.sections.map((sub) => {
+          const isOpen = openSub === sub.key;
+          return (
+            <View key={sub.key} style={styles.islSubCard}>
+              <Pressable
+                style={styles.islSubHeader}
+                onPress={() => setOpenSub(isOpen ? null : sub.key)}
+              >
+                <View style={styles.islSubIconWrap}>
+                  <Ionicons name={sub.icon} size={16} color="#4A1D8A" />
+                </View>
+                <Text style={styles.islSubLabel}>{sub.label}</Text>
+                {sub.items.length > 0 && (
+                  <View style={styles.islSubCount}>
+                    <Text style={styles.islSubCountText}>{sub.items.length}</Text>
+                  </View>
+                )}
+                <Ionicons
+                  name={isOpen ? "chevron-up" : "chevron-down"}
+                  size={16}
+                  color={Colors.brand.midGray}
+                />
+              </Pressable>
+
+              {isOpen && (
+                <View style={styles.islSubBody}>
+                  {sub.items.length === 0 ? (
+                    <View style={styles.islComingSoon}>
+                      <Text style={styles.islCsIcon}>⏳</Text>
+                      <Text style={styles.islCsTitle}>Coming Soon</Text>
+                      <Text style={styles.islCsDesc}>
+                        Books will be added soon. Contact us to suggest titles.
+                      </Text>
+                    </View>
+                  ) : (
+                    sub.items.map((item) => (
+                      <Pressable
+                        key={item.id}
+                        style={styles.islPdfRow}
+                        onPress={async () => {
+                          if (!item.path) return;
+                          const url = new URL(item.path, getApiUrl()).toString();
+                          const ok = await Linking.canOpenURL(url);
+                          if (ok) Linking.openURL(url);
+                          else Alert.alert("Cannot open", url);
+                        }}
+                      >
+                        <View style={styles.islPdfIcon}>
+                          <Ionicons name="document-text" size={18} color="#4A1D8A" />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.islPdfTitle}>{item.title}</Text>
+                          <Text style={styles.islPdfSub}>{item.subtitle}</Text>
+                        </View>
+                        <View style={styles.islDownloadBtn}>
+                          <Ionicons name="download-outline" size={14} color={Colors.brand.white} />
+                          <Text style={styles.islDownloadText}>PDF</Text>
+                        </View>
+                      </Pressable>
+                    ))
+                  )}
+                </View>
+              )}
             </View>
-          </View>
-        </View>
-      ))}
+          );
+        })}
+      </View>
 
       <View style={styles.islamicMoreNote}>
         <Ionicons name="information-circle-outline" size={16} color={Colors.brand.midGray} />
@@ -812,55 +933,127 @@ const styles = StyleSheet.create({
     color: "#7A5DAA",
     marginTop: 2,
   },
-  islamicCard: {
+  /* Language tabs */
+  islLangScroll: { marginBottom: 4 },
+  islLangRow: { flexDirection: "row", gap: 8, paddingRight: 4 },
+  islLangBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#D4C5EA",
+    backgroundColor: Colors.brand.white,
+  },
+  islLangBtnActive: { backgroundColor: "#4A1D8A", borderColor: "#4A1D8A" },
+  islLangLabel: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 12,
+    color: "#4A1D8A",
+  },
+  islLangLabelActive: { color: Colors.brand.white },
+  /* Subsection accordion */
+  islSubList: { gap: 8 },
+  islSubCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#D4C5EA",
+    overflow: "hidden",
+    backgroundColor: Colors.brand.white,
+  },
+  islSubHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    backgroundColor: Colors.brand.white,
-    borderRadius: 14,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: Colors.brand.cardBorder,
-    shadowColor: Colors.brand.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    gap: 10,
+    padding: 14,
   },
-  islamicCardIcon: {
-    width: 52, height: 52,
-    borderRadius: 14,
+  islSubIconWrap: {
+    width: 32, height: 32, borderRadius: 8,
     backgroundColor: "#F0EAF8",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
+    alignItems: "center", justifyContent: "center",
   },
-  islamicCardMeta: { flex: 1, gap: 3 },
-  islamicCardTitle: {
-    fontFamily: "Poppins_700Bold",
-    fontSize: 15,
+  islSubLabel: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 14,
     color: Colors.brand.darkText,
+    flex: 1,
   },
-  islamicCardSub: {
+  islSubCount: {
+    backgroundColor: "#4A1D8A",
+    borderRadius: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    marginRight: 4,
+  },
+  islSubCountText: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 10,
+    color: Colors.brand.white,
+  },
+  islSubBody: {
+    borderTopWidth: 1,
+    borderTopColor: "#EDE0F8",
+    backgroundColor: "#FAF7FE",
+    padding: 12,
+    gap: 8,
+  },
+  islComingSoon: {
+    alignItems: "center",
+    padding: 20,
+    gap: 6,
+  },
+  islCsIcon: { fontSize: 32 },
+  islCsTitle: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 14,
+    color: "#7A5DAA",
+  },
+  islCsDesc: {
     fontFamily: "Poppins_400Regular",
     fontSize: 12,
     color: Colors.brand.midGray,
+    textAlign: "center",
+    lineHeight: 18,
+    maxWidth: 260,
   },
-  comingSoonPill: {
+  islPdfRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: Colors.brand.white,
+    borderRadius: 10,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#D4C5EA",
+  },
+  islPdfIcon: {
+    width: 36, height: 36, borderRadius: 8,
+    backgroundColor: "#F0EAF8",
+    alignItems: "center", justifyContent: "center",
+  },
+  islPdfTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: Colors.brand.darkText,
+  },
+  islPdfSub: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 11,
+    color: Colors.brand.midGray,
+    marginTop: 2,
+  },
+  islDownloadBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    alignSelf: "flex-start",
-    backgroundColor: Colors.brand.accentLight,
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    marginTop: 4,
+    backgroundColor: "#4A1D8A",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
-  comingSoonPillText: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 10,
-    color: Colors.brand.primaryLight,
+  islDownloadText: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 11,
+    color: Colors.brand.white,
   },
   islamicMoreNote: {
     flexDirection: "row",
