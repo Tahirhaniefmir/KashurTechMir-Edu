@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, Pressable, Linking, Platform } from "react-native";
+import { View, Text, StyleSheet, Pressable, Linking, Platform, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/colors";
+
+const logoImg = require("@/assets/images/logo.png");
 
 const QUICK_LINKS = [
   "Notes",
@@ -44,10 +46,8 @@ export default function FooterSection() {
     <View style={styles.container}>
       <View style={styles.brandSection}>
         <View style={styles.logoRow}>
-          <View style={styles.logoCircle}>
-            <Ionicons name="school" size={20} color={Colors.brand.white} />
-          </View>
-          <Text style={styles.brandName}>KashurTechMir</Text>
+          <Image source={logoImg} style={styles.logoImg} resizeMode="contain" />
+          <Text style={styles.brandName}>Kashur System</Text>
         </View>
         <Text style={styles.tagline}>Empowering Students from Theory to Practical</Text>
         <Text style={styles.founder}>Founded by Tahir Hanief Mir · Osmania University Hyderabad</Text>
@@ -117,7 +117,7 @@ export default function FooterSection() {
       <View style={styles.divider} />
 
       <Text style={styles.copyright}>
-        © 2026 KashurTechMir. All rights reserved.{"\n"}
+        © 2026 Kashur System. All rights reserved.{"\n"}
         Designed with care for J&K Students.
       </Text>
 
@@ -140,13 +140,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  logoCircle: {
+  logoImg: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.brand.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
   },
   brandName: {
     fontFamily: "Poppins_700Bold",

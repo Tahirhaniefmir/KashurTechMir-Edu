@@ -59,9 +59,9 @@ export default function AboutSection() {
         </View>
         <Text style={styles.sectionTag}>About Us</Text>
       </View>
-      <Text style={styles.heading}>About KashurTechMir</Text>
+      <Text style={styles.heading}>About Kashur System</Text>
       <Text style={styles.description}>
-        KashurTechMir is an educational platform dedicated to helping students
+        Kashur System is an educational platform dedicated to helping students
         up to{" "}
         <Text style={styles.bold}>Class 12 (NCERT & CBSE)</Text> in Jammu &
         Kashmir. We provide quality notes, previous year papers{" "}

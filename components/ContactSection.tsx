@@ -37,7 +37,7 @@ const CONTACT_ITEMS = [
   {
     icon: "logo-facebook" as const,
     label: "Facebook",
-    value: "KashurTechMir Page",
+    value: "Kashur System Page",
     action: () => Linking.openURL("https://www.facebook.com/share/17uTPusyFv/"),
     color: "#1877F2",
   },

@@ -150,7 +150,7 @@ export default function HeroSection({ onExploreNotes }: Props) {
 
         {/* Heading */}
         <View style={styles.headingBlock}>
-          <Text style={styles.heading}>KashurTechMir</Text>
+          <Text style={styles.heading}>Kashur System</Text>
           <Text style={styles.tagline}>
             Empowering Students from{" "}
             <Text style={styles.taglineAccent}>Theory to Practical</Text>

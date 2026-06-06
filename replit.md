@@ -1,7 +1,7 @@
-# KashurTechMir
+# Kashur System
 
 ## Overview
-An educational mobile app for KashurTechMir - an educational platform by Tahir Hanief Mir that provides quality notes, previous year papers, project assistance, lab training, and courses to students in Jammu & Kashmir.
+An educational mobile app for Kashur System - an educational platform by Tahir Hanief Mir that provides quality notes, previous year papers, project assistance, lab training, and courses to students in Jammu & Kashmir.
 
 ## App Structure
 

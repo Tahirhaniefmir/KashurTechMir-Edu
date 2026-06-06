@@ -6,10 +6,13 @@ import {
   ScrollView,
   Pressable,
   Platform,
+  Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/colors";
+
+const logoImg = require("@/assets/images/logo.png");
 
 interface NavBarProps {
   activeSection: string;
@@ -39,10 +42,8 @@ export default function NavBar({ activeSection, onNavigate }: NavBarProps) {
       ]}
     >
       <View style={styles.brandRow}>
-        <View style={styles.logoCircle}>
-          <Ionicons name="school" size={20} color={Colors.brand.white} />
-        </View>
-        <Text style={styles.brandName}>KashurTechMir</Text>
+        <Image source={logoImg} style={styles.logoImg} resizeMode="contain" />
+        <Text style={styles.brandName}>Kashur System</Text>
       </View>
       <ScrollView
         horizontal
@@ -101,13 +102,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
-  logoCircle: {
+  logoImg: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.brand.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
   },
   brandName: {
     fontFamily: "Poppins_700Bold",

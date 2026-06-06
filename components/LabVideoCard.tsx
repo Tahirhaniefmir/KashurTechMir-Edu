@@ -14,7 +14,7 @@ import Colors from "@/constants/colors";
 const VIDEO_ID = "I69f68yXet0";
 const VIDEO_URL = "https://youtube.com/shorts/I69f68yXet0?si=d1PFUvUha9_d003E";
 const THUMBNAIL_URL = `https://img.youtube.com/vi/${VIDEO_ID}/hqdefault.jpg`;
-const CHANNEL_URL = "https://youtube.com/@kashurtechmir";
+const CHANNEL_URL = "https://youtube.com/@kashur.system";
 
 export default function LabVideoCard() {
   const pulseAnim = useRef(new Animated.Value(1)).current;
