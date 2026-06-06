@@ -1,7 +1,20 @@
-import React from "react";
-import { View, Text, StyleSheet, Pressable, Alert } from "react-native";
+import React, { useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Linking,
+  Animated,
+  Image,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/colors";
+
+const ET_VIDEO_ID = "nuA1qdjO2jY";
+const ET_VIDEO_URL = "https://youtu.be/nuA1qdjO2jY";
+const ET_THUMBNAIL = `https://img.youtube.com/vi/${ET_VIDEO_ID}/hqdefault.jpg`;
 
 const COURSES = [
   {
@@ -43,6 +56,32 @@ const COURSES = [
 ];
 
 export default function CoursesSection() {
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.15,
+          duration: 850,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 850,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   const handleEnroll = (title: string) => {
     Alert.alert(
       "Enroll Now",
@@ -65,6 +104,80 @@ export default function CoursesSection() {
         professionally.
       </Text>
 
+      {/* ── Featured Video ── */}
+      <Animated.View style={[styles.videoWrapper, { opacity: fadeAnim }]}>
+        <View style={styles.videoLabelRow}>
+          <Ionicons name="play-circle" size={16} color="#FF0000" />
+          <Text style={styles.videoLabel}>Featured Lecture</Text>
+          <View style={styles.etBadge}>
+            <Text style={styles.etBadgeText}>🌐 Emerging Tech</Text>
+          </View>
+        </View>
+
+        <Pressable
+          onPress={() => Linking.openURL(ET_VIDEO_URL)}
+          style={({ pressed }) => [
+            styles.videoCard,
+            pressed && styles.videoCardPressed,
+          ]}
+        >
+          {/* Thumbnail */}
+          <View style={styles.thumbContainer}>
+            <Image
+              source={{ uri: ET_THUMBNAIL }}
+              style={styles.thumbImage}
+              resizeMode="cover"
+            />
+            <View style={styles.thumbOverlay} />
+
+            {/* YouTube badge */}
+            <View style={styles.ytBadge}>
+              <Ionicons name="logo-youtube" size={13} color="#FF0000" />
+              <Text style={styles.ytBadgeText}>YouTube</Text>
+            </View>
+
+            {/* Pulsing play button */}
+            <View style={styles.playCentre}>
+              <Animated.View
+                style={[styles.playGlow, { transform: [{ scale: pulseAnim }] }]}
+              />
+              <View style={styles.playRing}>
+                <Ionicons
+                  name="play"
+                  size={26}
+                  color={Colors.brand.white}
+                  style={{ marginLeft: 4 }}
+                />
+              </View>
+            </View>
+
+            {/* Title overlay */}
+            <View style={styles.titleOverlay}>
+              <Text style={styles.overlayTitle}>
+                Introduction to Emerging Technologies
+              </Text>
+              <Text style={styles.overlayMeta}>Tap to watch on YouTube</Text>
+            </View>
+          </View>
+
+          {/* Info bar */}
+          <View style={styles.infoBar}>
+            <View style={styles.infoAvatar}>
+              <Ionicons name="globe-outline" size={16} color={Colors.brand.white} />
+            </View>
+            <View style={styles.infoMeta}>
+              <Text style={styles.infoTitle}>Emerging Technologies</Text>
+              <Text style={styles.infoSub}>Kashur System · Full Lecture</Text>
+            </View>
+            <View style={styles.watchBtn}>
+              <Ionicons name="logo-youtube" size={14} color={Colors.brand.white} />
+              <Text style={styles.watchText}>Watch</Text>
+            </View>
+          </View>
+        </Pressable>
+      </Animated.View>
+
+      {/* ── Course Cards ── */}
       <View style={styles.coursesList}>
         {COURSES.map((course, i) => (
           <CourseCard
@@ -163,6 +276,168 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     lineHeight: 20,
   },
+
+  /* ── Featured Video ── */
+  videoWrapper: {
+    marginBottom: 20,
+    gap: 10,
+  },
+  videoLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  videoLabel: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: Colors.brand.darkText,
+    flex: 1,
+  },
+  etBadge: {
+    backgroundColor: Colors.brand.accentLight,
+    borderRadius: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+  },
+  etBadgeText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: Colors.brand.primaryLight,
+  },
+  videoCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: Colors.brand.cardBorder,
+    backgroundColor: Colors.brand.white,
+  },
+  videoCardPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.985 }],
+  },
+  thumbContainer: {
+    height: 200,
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.brand.primary,
+  },
+  thumbImage: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
+  thumbOverlay: {
+    position: "absolute",
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: "rgba(6,21,57,0.35)",
+  },
+  ytBadge: {
+    position: "absolute",
+    top: 12, left: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    borderRadius: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+  },
+  ytBadgeText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: Colors.brand.white,
+  },
+  playCentre: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
+  },
+  playGlow: {
+    position: "absolute",
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: "rgba(30,100,220,0.28)",
+  },
+  playRing: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 2.5,
+    borderColor: "rgba(255,255,255,0.6)",
+    backgroundColor: "rgba(0,0,0,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleOverlay: {
+    position: "absolute",
+    bottom: 0, left: 0, right: 0,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    backgroundColor: "rgba(6,21,57,0.75)",
+    gap: 2,
+  },
+  overlayTitle: {
+    fontFamily: "Poppins_700Bold",
+    fontSize: 13,
+    color: Colors.brand.white,
+    lineHeight: 19,
+  },
+  overlayMeta: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 10,
+    color: "rgba(255,255,255,0.6)",
+  },
+  infoBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: Colors.brand.primary,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  infoAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.brand.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  infoMeta: {
+    flex: 1,
+  },
+  infoTitle: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: Colors.brand.white,
+    lineHeight: 18,
+  },
+  infoSub: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 11,
+    color: "rgba(255,255,255,0.55)",
+    marginTop: 1,
+  },
+  watchBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    backgroundColor: "#FF0000",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  watchText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 11,
+    color: Colors.brand.white,
+  },
+
+  /* ── Course Cards ── */
   coursesList: {
     gap: 14,
   },
