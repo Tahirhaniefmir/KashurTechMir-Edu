@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kashur System — Admin Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; color: #1a202c; min-height: 100vh; }
+  header { background: #0A2463; color: white; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 20px; font-weight: 700; }
+  header span { font-size: 12px; opacity: 0.7; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #27AE60; margin-right: 6px; animation: blink 1.2s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .stat-card .num { font-size: 32px; font-weight: 800; color: #0A2463; }
+  .stat-card .label { font-size: 12px; color: #718096; margin-top: 4px; }
+  .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media(max-width:700px) { .panels { grid-template-columns: 1fr; } }
+  .panel { background: white; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; }
+  .panel-header { padding: 14px 18px; border-bottom: 1px solid #e2e8f0; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .panel-body { max-height: 400px; overflow-y: auto; }
+  .row { padding: 10px 18px; border-bottom: 1px solid #f7fafc; font-size: 13px; display: flex; flex-direction: column; gap: 2px; }
+  .row:last-child { border-bottom: none; }
+  .row .name { font-weight: 600; color: #1a202c; }
+  .row .meta { color: #718096; font-size: 11px; }
+  .tag { display: inline-block; padding: 1px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+  .tag.visit { background: #EBF8FF; color: #2B6CB0; }
+  .tag.login { background: #F0FFF4; color: #276749; }
+  .tag.register { background: #FFF5F5; color: #C53030; }
+  .empty { padding: 24px 18px; text-align: center; color: #A0AEC0; font-size: 13px; }
+  .refresh-btn { cursor: pointer; font-size: 12px; background: #EBF8FF; border: none; border-radius: 8px; padding: 4px 10px; color: #2B6CB0; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 Kashur System Admin</h1>
+  <span><span class="live-dot"></span>Live Dashboard</span>
+</header>
+
+<div class="container">
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="num" id="totalVisits">—</div>
+      <div class="label">Total Visits & Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="totalUsers">—</div>
+      <div class="label">Registered Students</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="todayVisits">—</div>
+      <div class="label">Today's Activity</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="wsStatus" style="font-size:14px;padding-top:8px;">Connecting…</div>
+      <div class="label">WebSocket Status</div>
+    </div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="panel-header">
+        📋 Recent Activity
+        <button class="refresh-btn" onclick="refreshData()">Refresh</button>
+      </div>
+      <div class="panel-body" id="activityList"><div class="empty">Loading…</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">👨‍🎓 Registered Students</div>
+      <div class="panel-body" id="userList"><div class="empty">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const visitors = [];
+  const users = [];
+
+  function formatTime(ts) {
+    const d = new Date(ts);
+    return d.toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' });
+  }
+
+  function isToday(ts) {
+    const d = new Date(ts);
+    const now = new Date();
+    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }
+
+  function renderActivity() {
+    const el = document.getElementById('activityList');
+    if (!visitors.length) { el.innerHTML = '<div class="empty">No activity yet. Waiting for visitors…</div>'; return; }
+    const recent = [...visitors].reverse().slice(0, 50);
+    el.innerHTML = recent.map(v => `
+      <div class="row">
+        <div class="name">
+          ${v.userName ? '👤 ' + v.userName : (v.path === '/app-launch' ? '📱 App Launch' : '🌐 Website Visit')}
+          <span class="tag ${v.type}">${v.type}</span>
+        </div>
+        <div class="meta">
+          ${v.userId ? 'Email: ' + (users.find(u => u.id === v.userId)?.email || v.userId) + ' · ' : ''}
+          🕐 ${formatTime(v.timestamp)} · 
+          🌐 ${v.ip}
+        </div>
+      </div>`).join('');
+    document.getElementById('totalVisits').textContent = visitors.length;
+    const today = visitors.filter(v => isToday(v.timestamp)).length;
+    document.getElementById('todayVisits').textContent = today;
+  }
+
+  function renderUsers() {
+    const el = document.getElementById('userList');
+    document.getElementById('totalUsers').textContent = users.length;
+    if (!users.length) { el.innerHTML = '<div class="empty">No registered students yet.</div>'; return; }
+    el.innerHTML = [...users].reverse().map(u => `
+      <div class="row">
+        <div class="name">👤 ${u.name}</div>
+        <div class="meta">📧 ${u.email} · Joined ${formatTime(u.createdAt)}</div>
+      </div>`).join('');
+  }
+
+  function refreshData() {
+    renderActivity();
+    renderUsers();
+  }
+
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const ws = new WebSocket(`${proto}://${location.host}/ws/admin`);
+
+  ws.onopen = () => {
+    document.getElementById('wsStatus').textContent = '🟢 Live';
+    document.getElementById('wsStatus').style.color = '#27AE60';
+  };
+
+  ws.onclose = () => {
+    document.getElementById('wsStatus').textContent = '🔴 Offline';
+    document.getElementById('wsStatus').style.color = '#E53E3E';
+  };
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'init') {
+      visitors.length = 0;
+      users.length = 0;
+      visitors.push(...(msg.visitors || []));
+      users.push(...(msg.users || []));
+    } else if (msg.type === 'visit' || msg.type === 'login' || msg.type === 'register') {
+      if (msg.visitor) visitors.push(msg.visitor);
+      if (msg.user && !users.find(u => u.id === msg.user.id)) users.push(msg.user);
+    }
+    renderActivity();
+    renderUsers();
+  };
+
+  ws.onerror = () => {
+    document.getElementById('wsStatus').textContent = '⚠️ Error';
+  };
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import { registerRoutes, broadcastAdmin } from "./routes";
+import { addVisitor } from "./auth";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -187,6 +188,16 @@ function configureExpoAndLanding(app: express.Application) {
     }
 
     if (req.path === "/") {
+      try {
+        const entry = addVisitor({
+          ip: req.ip || "unknown",
+          userAgent: req.headers["user-agent"] || "",
+          timestamp: new Date().toISOString(),
+          path: "/",
+          type: "visit",
+        });
+        broadcastAdmin({ type: "visit", visitor: entry });
+      } catch {}
       return serveLandingPage({
         req,
         res,
@@ -196,6 +207,13 @@ function configureExpoAndLanding(app: express.Application) {
     }
 
     next();
+  });
+
+  // Admin dashboard
+  app.get("/admin", (_req: Request, res: Response) => {
+    const adminPath = path.resolve(process.cwd(), "server", "templates", "admin.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.sendFile(adminPath);
   });
 
   app.use("/assets", express.static(path.resolve(process.cwd(), "assets")));

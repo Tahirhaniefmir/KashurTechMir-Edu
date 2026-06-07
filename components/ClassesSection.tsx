@@ -35,6 +35,25 @@ const CLASS6_SCIENCE_PDFS = [
   { ch: 16, title: "Garbage in, Garbage out",               path: "/assets/pdfs/class6-science-ch16-garbage-in-garbage-out.pdf" },
 ];
 
+const CLASS6_MATH_PDFS = [
+  { ch: 1,  title: "Knowing Our Numbers",                path: "/assets/pdfs/class6-math-ch01-knowing-our-numbers.pdf" },
+  { ch: 2,  title: "Whole Numbers",                      path: "/assets/pdfs/class6-math-ch02-whole-numbers.pdf" },
+  { ch: 3,  title: "Playing with Numbers",               path: "/assets/pdfs/class6-math-ch03-playing-with-numbers.pdf" },
+  { ch: 4,  title: "Basic Geometrical Ideas",            path: "/assets/pdfs/class6-math-ch04-basic-geometrical-ideas.pdf" },
+  { ch: 5,  title: "Understanding Elementary Shapes",    path: "/assets/pdfs/class6-math-ch05-understanding-elementary-shapes.pdf" },
+  { ch: 6,  title: "Integers",                           path: "/assets/pdfs/class6-math-ch06-integers.pdf" },
+  { ch: 7,  title: "Fractions",                          path: "/assets/pdfs/class6-math-ch07-fractions.pdf" },
+  { ch: 8,  title: "Decimals",                           path: "/assets/pdfs/class6-math-ch08-decimals.pdf" },
+  { ch: 9,  title: "Data Handling",                      path: "/assets/pdfs/class6-math-ch09-data-handling.pdf" },
+  { ch: 10, title: "Mensuration",                        path: "/assets/pdfs/class6-math-ch10-mensuration.pdf" },
+  { ch: 11, title: "Algebra",                            path: "/assets/pdfs/class6-math-ch11-algebra.pdf" },
+  { ch: 12, title: "Ratio and Proportion",               path: "/assets/pdfs/class6-math-ch12-ratio-and-proportion.pdf" },
+  { ch: 13, title: "Symmetry",                           path: "/assets/pdfs/class6-math-ch13-symmetry.pdf" },
+  { ch: 14, title: "Practical Geometry",                 path: "/assets/pdfs/class6-math-ch14-practical-geometry.pdf" },
+  { ch: 15, title: "Perimeter and Area",                 path: "/assets/pdfs/class6-math-ch15-perimeter-and-area.pdf" },
+  { ch: 16, title: "Sets",                               path: "/assets/pdfs/class6-math-ch16-sets.pdf" },
+];
+
 const CLASS12_PHYSICS_PDFS = [
   { id: "semiconductors", title: "Power Semiconductor Devices", chapter: "Chapter 1", pages: "~50 pages", path: "/assets/pdfs/semiconductors-class12-physics.pdf" },
 ];
@@ -215,6 +234,7 @@ function ClassCard({
   onToggle: () => void; onDownload: (cls: number, type: string) => void;
 }) {
   const [scienceExpanded, setScienceExpanded] = useState(false);
+  const [mathExpanded, setMathExpanded] = useState(false);
 
   const getSubjects = (c: number) => {
     if (c <= 8)  return ["Mathematics", "Science", "English", "Social Science", "Hindi"];
@@ -224,6 +244,7 @@ function ClassCard({
 
   const subjects = getSubjects(cls);
   const has6Science  = cls === 6;
+  const has6Math     = cls === 6;
   const has12Physics = cls === 12;
 
   return (
@@ -243,7 +264,7 @@ function ClassCard({
           <Text style={styles.className}>Class {cls}</Text>
           <Text style={styles.classBoard}>
             {board} · {subjects.length} Subjects
-            {has6Science ? " · 15 PDFs" : has12Physics ? " · 1 PDF" : ""}
+            {has6Science ? " · 32 PDFs (Sci+Math)" : has12Physics ? " · 1 PDF" : ""}
           </Text>
         </View>
         {(has6Science || has12Physics) && (
@@ -265,7 +286,9 @@ function ClassCard({
           <View style={styles.subjectsRow}>
             {subjects.map((sub) => {
               const highlight =
-                (sub === "Science" && has6Science) || (sub === "Physics" && has12Physics);
+                (sub === "Mathematics" && has6Math) ||
+                (sub === "Science" && has6Science) ||
+                (sub === "Physics" && has12Physics);
               return (
                 <View key={sub} style={[styles.subjectChip, highlight && styles.subjectChipHL]}>
                   <Text style={[styles.subjectChipText, highlight && styles.subjectChipTextHL]}>
@@ -288,7 +311,7 @@ function ClassCard({
                   <Text style={styles.pdfSectionTitle}>Science Notes — All Chapters</Text>
                 </View>
                 <View style={styles.pdfCountBadge}>
-                  <Text style={styles.pdfCountText}>15 PDFs</Text>
+                  <Text style={styles.pdfCountText}>16 PDFs</Text>
                 </View>
                 <Ionicons
                   name={scienceExpanded ? "chevron-up" : "chevron-down"}
@@ -300,34 +323,78 @@ function ClassCard({
               {scienceExpanded && (
                 <View style={styles.pdfList}>
                   {CLASS6_SCIENCE_PDFS.map((pdf) => (
-                    <Pressable
-                      key={pdf.ch}
-                      onPress={() => {
-                        if (pdf.path) openPdf(pdf.path);
-                        else Alert.alert("Coming Soon", "Chapter 10 PDF will be added soon.");
-                      }}
-                      style={({ pressed }) => [
-                        styles.pdfCard,
-                        !pdf.path && styles.pdfCardDisabled,
-                        pressed && styles.pressed,
-                      ]}
-                    >
-                      <View style={[styles.pdfChBadge, !pdf.path && styles.pdfChBadgeGray]}>
+                    <View key={pdf.ch} style={styles.pdfCard}>
+                      <View style={styles.pdfChBadge}>
                         <Text style={styles.pdfChText}>Ch {pdf.ch}</Text>
                       </View>
-                      <Text style={[styles.pdfTitle, !pdf.path && styles.pdfTitleGray]} numberOfLines={2}>
-                        {pdf.title}
-                      </Text>
-                      {pdf.path ? (
-                        <View style={styles.pdfDlBtn}>
-                          <Ionicons name="download" size={14} color={Colors.brand.white} />
-                        </View>
-                      ) : (
-                        <View style={styles.pdfSoonBadge}>
-                          <Text style={styles.pdfSoonText}>Soon</Text>
-                        </View>
-                      )}
-                    </Pressable>
+                      <Text style={styles.pdfTitle} numberOfLines={1}>{pdf.title}</Text>
+                      <View style={styles.pdfActBtns}>
+                        <Pressable
+                          onPress={() => openPdf(pdf.path)}
+                          style={({ pressed }) => [styles.pdfReadBtn, pressed && styles.pressed]}
+                        >
+                          <Ionicons name="eye-outline" size={11} color={Colors.brand.primaryLight} />
+                          <Text style={styles.pdfReadBtnText}>Read</Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => openPdf(pdf.path)}
+                          style={({ pressed }) => [styles.pdfDlBtn, pressed && styles.pressed]}
+                        >
+                          <Ionicons name="download" size={12} color={Colors.brand.white} />
+                        </Pressable>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* Class 6 Math PDFs */}
+          {has6Math && (
+            <View style={styles.pdfSection}>
+              <Pressable
+                onPress={() => setMathExpanded((v) => !v)}
+                style={({ pressed }) => [styles.pdfSectionToggle, pressed && styles.pressed]}
+              >
+                <View style={styles.pdfSectionLeft}>
+                  <Ionicons name="calculator-outline" size={15} color={Colors.brand.primaryLight} />
+                  <Text style={styles.pdfSectionTitle}>Mathematics Notes — All Chapters</Text>
+                </View>
+                <View style={styles.pdfCountBadge}>
+                  <Text style={styles.pdfCountText}>16 PDFs</Text>
+                </View>
+                <Ionicons
+                  name={mathExpanded ? "chevron-up" : "chevron-down"}
+                  size={16}
+                  color={Colors.brand.primaryLight}
+                />
+              </Pressable>
+
+              {mathExpanded && (
+                <View style={styles.pdfList}>
+                  {CLASS6_MATH_PDFS.map((pdf) => (
+                    <View key={pdf.ch} style={styles.pdfCard}>
+                      <View style={styles.pdfChBadge}>
+                        <Text style={styles.pdfChText}>Ch {pdf.ch}</Text>
+                      </View>
+                      <Text style={styles.pdfTitle} numberOfLines={1}>{pdf.title}</Text>
+                      <View style={styles.pdfActBtns}>
+                        <Pressable
+                          onPress={() => openPdf(pdf.path)}
+                          style={({ pressed }) => [styles.pdfReadBtn, pressed && styles.pressed]}
+                        >
+                          <Ionicons name="eye-outline" size={11} color={Colors.brand.primaryLight} />
+                          <Text style={styles.pdfReadBtnText}>Read</Text>
+                        </Pressable>
+                        <Pressable
+                          onPress={() => openPdf(pdf.path)}
+                          style={({ pressed }) => [styles.pdfDlBtn, pressed && styles.pressed]}
+                        >
+                          <Ionicons name="download" size={12} color={Colors.brand.white} />
+                        </Pressable>
+                      </View>
+                    </View>
                   ))}
                 </View>
               )}
@@ -784,9 +851,30 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   pdfTitleGray: { color: Colors.brand.midGray },
+  pdfActBtns: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    flexShrink: 0,
+  },
+  pdfReadBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    borderWidth: 1,
+    borderColor: Colors.brand.primaryLight,
+    borderRadius: 7,
+    paddingHorizontal: 7,
+    paddingVertical: 5,
+  },
+  pdfReadBtnText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 10,
+    color: Colors.brand.primaryLight,
+  },
   pdfDlBtn: {
-    width: 30, height: 30,
-    borderRadius: 8,
+    width: 28, height: 28,
+    borderRadius: 7,
     backgroundColor: Colors.brand.primary,
     alignItems: "center", justifyContent: "center",
     flexShrink: 0,

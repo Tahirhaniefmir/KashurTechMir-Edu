@@ -1379,6 +1379,37 @@
       .footer-bottom { flex-direction: column; text-align: center; }
       .founder-card { flex-direction: column; }
     }
+  /* PDF action buttons */
+  .sci-pdf-row { display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;background:white;border:1px solid var(--card-border);margin-bottom:4px; }
+  .pdf-act-btns { display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto; }
+  .pdf-read-btn { display:inline-flex;align-items:center;gap:3px;border:1.5px solid var(--primary-light);border-radius:7px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--primary);text-decoration:none;background:white;transition:all .15s;white-space:nowrap; }
+  .pdf-read-btn:hover { background:var(--primary);color:white; }
+  .pdf-dl-btn { width:26px;height:26px;border-radius:7px;background:var(--primary);color:white;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;transition:all .15s;flex-shrink:0; }
+  .pdf-dl-btn:hover { background:#06184d; }
+  /* Navbar auth */
+  .nav-login-btn { border:1.5px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;color:white;background:transparent;cursor:pointer;transition:all .15s; }
+  .nav-login-btn:hover { background:rgba(255,255,255,0.15); }
+  .nav-user-chip { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border-radius:8px;padding:5px 12px;font-size:12px;color:white;font-weight:600; }
+  .nav-logout-btn { border:none;background:rgba(255,255,255,0.2);color:white;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer; }
+  /* Auth Modal */
+  .auth-modal-overlay { position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.55);display:none;align-items:flex-end;justify-content:center; }
+  .auth-modal-sheet { background:white;border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:480px;animation:slideUp .3s ease; }
+  @keyframes slideUp { from { transform:translateY(60px);opacity:0; } to { transform:translateY(0);opacity:1; } }
+  .auth-modal-handle { width:40px;height:4px;border-radius:2px;background:#e2e8f0;margin:0 auto 20px; }
+  .auth-modal-title { font-size:22px;font-weight:800;color:var(--dark-text);margin-bottom:4px; }
+  .auth-modal-sub { font-size:13px;color:var(--mid-gray);margin-bottom:20px; }
+  .auth-input-group { margin-bottom:14px; }
+  .auth-input-label { font-size:13px;font-weight:700;color:var(--dark-text);display:block;margin-bottom:6px; }
+  .auth-input { width:100%;border:1.5px solid #e2e8f0;border-radius:10px;padding:11px 14px;font-size:14px;color:var(--dark-text);outline:none;transition:border-color .15s; }
+  .auth-input:focus { border-color:var(--primary); }
+  .auth-error { background:#FFF0F0;border:1px solid #FFDADA;border-radius:8px;padding:10px 12px;color:#E53E3E;font-size:12px;margin-bottom:12px;display:none; }
+  .auth-submit-btn { width:100%;background:var(--primary);color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:all .15s; }
+  .auth-submit-btn:hover { background:#06184d; }
+  .auth-submit-btn:disabled { opacity:0.6;cursor:default; }
+  .auth-switch { text-align:center;font-size:13px;color:var(--mid-gray); }
+  .auth-switch-link { color:var(--primary);font-weight:700;cursor:pointer;text-decoration:underline; }
+  .auth-close { position:absolute;top:20px;right:20px;font-size:24px;cursor:pointer;color:var(--mid-gray);background:none;border:none;line-height:1; }
+
   </style>
 </head>
 <body>
@@ -1399,6 +1430,13 @@
       <li><a href="#courses">Courses</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
+    <div id="navAuthArea" style="display:flex;align-items:center;gap:8px;margin-right:4px;">
+      <button onclick="openAuthModal('login')" id="navLoginBtn" class="nav-login-btn">Login</button>
+      <div id="navUserChip" class="nav-user-chip" style="display:none;">
+        <span id="navUserName"></span>
+        <button onclick="doLogout()" class="nav-logout-btn">Logout</button>
+      </div>
+    </div>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
@@ -1664,6 +1702,9 @@
           <span>⏱ 2 Months</span>
           <span>📈 Intermediate</span>
         </div>
+        <a href="https://youtube.com/playlist?list=PLZV7tleirGTLyUAgkXI3mQo1fAnKy_aPc" target="_blank" style="display:flex;align-items:center;gap:8px;background:#FFF5F5;border:1.5px solid #FFCDD2;border-radius:10px;padding:10px 14px;text-decoration:none;color:#1a1a1a;font-weight:600;font-size:13px;margin-bottom:10px;">
+          <span style="color:#FF0000;font-size:16px;">▶</span> Demo Lectures Playlist <span style="margin-left:auto;font-size:12px;color:#718096;">↗</span>
+        </a>
         <a href="#contact" class="btn-enroll">+ Enroll Now</a>
       </div>
       <div class="course-card fade-up">
@@ -1809,6 +1850,35 @@
 
 <div id="toast"></div>
 
+<!-- AUTH MODAL -->
+<div class="auth-modal-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal-sheet" style="position:relative;">
+    <button class="auth-close" onclick="closeAuthModal()">×</button>
+    <div class="auth-modal-handle"></div>
+    <div class="auth-modal-title" id="authModalTitle">Welcome Back</div>
+    <div class="auth-modal-sub" id="authModalSub">Sign in to access your notes</div>
+    <input type="hidden" id="authMode" value="login" />
+    <div class="auth-input-group" id="authNameGroup" style="display:none;">
+      <label class="auth-input-label">Full Name</label>
+      <input class="auth-input" id="authName" type="text" placeholder="Enter your full name" autocapitalize="words" />
+    </div>
+    <div class="auth-input-group">
+      <label class="auth-input-label">Email Address</label>
+      <input class="auth-input" id="authEmail" type="email" placeholder="Enter your email" />
+    </div>
+    <div class="auth-input-group">
+      <label class="auth-input-label">Password</label>
+      <input class="auth-input" id="authPassword" type="password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')submitAuth()" />
+    </div>
+    <div class="auth-error" id="authError"></div>
+    <button class="auth-submit-btn" id="authSubmitBtn" onclick="submitAuth()">Sign In</button>
+    <div class="auth-switch">
+      <span id="authSwitchText">Don't have an account?</span>
+      <span class="auth-switch-link" id="authSwitchLink" onclick="openAuthModal('register')">Register Free</span>
+    </div>
+  </div>
+</div>
+
 <script>
   // ── DATA ──
   const SUBJECTS = {
@@ -1838,6 +1908,25 @@
     { ch:14, title:'Water',                                        url:'/assets/pdfs/class6-science-ch14-water.pdf' },
     { ch:15, title:'Air Around Us',                                url:'/assets/pdfs/class6-science-ch15-air-around-us.pdf' },
     { ch:16, title:'Garbage in, Garbage out',                      url:'/assets/pdfs/class6-science-ch16-garbage-in-garbage-out.pdf' },
+  ];
+
+  const CLASS6_MATH_PDFS = [
+    { ch:1,  title:'Knowing Our Numbers',             url:'/assets/pdfs/class6-math-ch01-knowing-our-numbers.pdf' },
+    { ch:2,  title:'Whole Numbers',                   url:'/assets/pdfs/class6-math-ch02-whole-numbers.pdf' },
+    { ch:3,  title:'Playing with Numbers',            url:'/assets/pdfs/class6-math-ch03-playing-with-numbers.pdf' },
+    { ch:4,  title:'Basic Geometrical Ideas',         url:'/assets/pdfs/class6-math-ch04-basic-geometrical-ideas.pdf' },
+    { ch:5,  title:'Understanding Elementary Shapes', url:'/assets/pdfs/class6-math-ch05-understanding-elementary-shapes.pdf' },
+    { ch:6,  title:'Integers',                        url:'/assets/pdfs/class6-math-ch06-integers.pdf' },
+    { ch:7,  title:'Fractions',                       url:'/assets/pdfs/class6-math-ch07-fractions.pdf' },
+    { ch:8,  title:'Decimals',                        url:'/assets/pdfs/class6-math-ch08-decimals.pdf' },
+    { ch:9,  title:'Data Handling',                   url:'/assets/pdfs/class6-math-ch09-data-handling.pdf' },
+    { ch:10, title:'Mensuration',                     url:'/assets/pdfs/class6-math-ch10-mensuration.pdf' },
+    { ch:11, title:'Algebra',                         url:'/assets/pdfs/class6-math-ch11-algebra.pdf' },
+    { ch:12, title:'Ratio and Proportion',            url:'/assets/pdfs/class6-math-ch12-ratio-and-proportion.pdf' },
+    { ch:13, title:'Symmetry',                        url:'/assets/pdfs/class6-math-ch13-symmetry.pdf' },
+    { ch:14, title:'Practical Geometry',              url:'/assets/pdfs/class6-math-ch14-practical-geometry.pdf' },
+    { ch:15, title:'Perimeter and Area',              url:'/assets/pdfs/class6-math-ch15-perimeter-and-area.pdf' },
+    { ch:16, title:'Sets',                            url:'/assets/pdfs/class6-math-ch16-sets.pdf' },
   ];
 
   const CLASS12_PDFS = [
@@ -1883,7 +1972,7 @@
       const hasPdf   = has6Sci || has12Phy;
 
       const pdfBadge = hasPdf
-        ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(39,174,96,0.12);border:1px solid rgba(39,174,96,0.25);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#27AE60;margin-right:6px;">📄 ${has6Sci ? '15 PDFs' : '1 PDF'}</span>` : '';
+        ? `<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(39,174,96,0.12);border:1px solid rgba(39,174,96,0.25);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700;color:#27AE60;margin-right:6px;">📄 ${has6Sci ? '16 Sci + 16 Math PDFs' : '1 PDF'}</span>` : '';
 
       const subjectChips = subs.map(s => {
         const hl = (s === 'Science' && has6Sci) || (s === 'Physics' && has12Phy);
@@ -1894,22 +1983,38 @@
         <div class="sci-toggle" onclick="toggleSciPdf(6)">
           <span>🔬</span>
           <span class="sci-toggle-label">Science Notes — All Chapters</span>
-          <span class="sci-pdf-count">15 PDFs</span>
+          <span class="sci-pdf-count">16 PDFs</span>
           <span id="sciChev6">▾</span>
         </div>
         <div class="sci-pdf-list" id="sciList6">
-          ${CLASS6_SCIENCE_PDFS.map(p => p.url
-            ? `<a class="sci-pdf-row" href="${p.url}" target="_blank">
-                <div class="ch-badge">Ch ${p.ch}</div>
-                <span class="sci-pdf-title">${p.title}</span>
-                <div class="dl-icon">⬇</div>
-               </a>`
-            : `<div class="sci-pdf-row disabled">
-                <div class="ch-badge gray">Ch ${p.ch}</div>
-                <span class="sci-pdf-title" style="color:var(--mid-gray)">${p.title}</span>
-                <span class="soon-badge">Soon</span>
-               </div>`
-          ).join('')}
+          ${CLASS6_SCIENCE_PDFS.map(p => `
+            <div class="sci-pdf-row">
+              <div class="ch-badge">Ch ${p.ch}</div>
+              <span class="sci-pdf-title">${p.title}</span>
+              <div class="pdf-act-btns">
+                <a href="${p.url}" target="_blank" class="pdf-read-btn">👁 Read</a>
+                <a href="${p.url}" download class="pdf-dl-btn">⬇</a>
+              </div>
+            </div>`).join('')}
+        </div>` : '';
+
+      const mathSection = has6Sci ? `
+        <div class="sci-toggle" onclick="toggleMathPdf(6)">
+          <span>📐</span>
+          <span class="sci-toggle-label">Mathematics Notes — All Chapters</span>
+          <span class="sci-pdf-count">16 PDFs</span>
+          <span id="mathChev6">▾</span>
+        </div>
+        <div class="sci-pdf-list" id="mathList6">
+          ${CLASS6_MATH_PDFS.map(p => `
+            <div class="sci-pdf-row">
+              <div class="ch-badge">Ch ${p.ch}</div>
+              <span class="sci-pdf-title">${p.title}</span>
+              <div class="pdf-act-btns">
+                <a href="${p.url}" target="_blank" class="pdf-read-btn">👁 Read</a>
+                <a href="${p.url}" download class="pdf-dl-btn">⬇</a>
+              </div>
+            </div>`).join('')}
         </div>` : '';
 
       const physicsSection = has12Phy ? `
@@ -1941,6 +2046,7 @@
         <div class="class-body" id="body${cls}">
           <div class="subjects-row">${subjectChips}</div>
           ${scienceSection}
+          ${mathSection}
           ${physicsSection}
           <div class="class-actions" style="margin-top:8px;">
             <button class="btn-notes" onclick="showToast('Notes for Class ${cls} coming soon!')">📄 View Notes</button>
@@ -1963,6 +2069,16 @@
   function toggleSciPdf(cls) {
     const list = document.getElementById('sciList' + cls);
     const chev = document.getElementById('sciChev' + cls);
+    if (!list) return;
+    const isOpen = list.classList.contains('open');
+    list.classList.toggle('open', !isOpen);
+    chev.textContent = isOpen ? '▾' : '▴';
+  }
+
+  function toggleMathPdf(cls) {
+    const list = document.getElementById('mathList' + cls);
+    const chev = document.getElementById('mathChev' + cls);
+    if (!list) return;
     const isOpen = list.classList.contains('open');
     list.classList.toggle('open', !isOpen);
     chev.textContent = isOpen ? '▾' : '▴';
@@ -2171,6 +2287,104 @@
 
   // ── INIT ──
   renderClasses();
+
+  // ── AUTH ──
+  let authToken = localStorage.getItem('auth_token');
+  let authUser = null;
+
+  async function checkAuth() {
+    if (!authToken) return;
+    try {
+      const res = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + authToken } });
+      if (res.ok) { authUser = (await res.json()).user; updateNavAuth(); }
+      else { localStorage.removeItem('auth_token'); authToken = null; }
+    } catch {}
+  }
+
+  function updateNavAuth() {
+    const loginBtn = document.getElementById('navLoginBtn');
+    const userChip = document.getElementById('navUserChip');
+    const userName = document.getElementById('navUserName');
+    if (authUser) {
+      loginBtn.style.display = 'none';
+      userChip.style.display = 'flex';
+      userName.textContent = '👤 ' + authUser.name;
+    } else {
+      loginBtn.style.display = '';
+      userChip.style.display = 'none';
+    }
+  }
+
+  function openAuthModal(mode) {
+    document.getElementById('authModal').style.display = 'flex';
+    document.getElementById('authMode').value = mode;
+    document.getElementById('authModalTitle').textContent = mode === 'login' ? 'Welcome Back' : 'Create Account';
+    document.getElementById('authModalSub').textContent = mode === 'login' ? 'Sign in to access your notes' : 'Join students across Jammu & Kashmir';
+    document.getElementById('authNameGroup').style.display = mode === 'register' ? '' : 'none';
+    document.getElementById('authError').style.display = 'none';
+    document.getElementById('authError').textContent = '';
+    document.getElementById('authSwitchText').textContent = mode === 'login' ? "Don't have an account? " : 'Already have an account? ';
+    document.getElementById('authSwitchLink').textContent = mode === 'login' ? 'Register Free' : 'Sign In';
+    document.getElementById('authSwitchLink').onclick = () => openAuthModal(mode === 'login' ? 'register' : 'login');
+    document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authPassword').value = '';
+    if (document.getElementById('authName')) document.getElementById('authName').value = '';
+  }
+
+  function closeAuthModal() {
+    document.getElementById('authModal').style.display = 'none';
+  }
+
+  async function submitAuth() {
+    const mode = document.getElementById('authMode').value;
+    const email = document.getElementById('authEmail').value.trim();
+    const password = document.getElementById('authPassword').value;
+    const name = document.getElementById('authName')?.value.trim();
+    const errorEl = document.getElementById('authError');
+    errorEl.style.display = 'none';
+
+    if (!email || !password) { errorEl.textContent = 'Please fill in all fields.'; errorEl.style.display = ''; return; }
+    if (mode === 'register' && !name) { errorEl.textContent = 'Please enter your name.'; errorEl.style.display = ''; return; }
+
+    const btn = document.getElementById('authSubmitBtn');
+    btn.disabled = true;
+    const origText = btn.textContent;
+    btn.textContent = 'Please wait…';
+
+    try {
+      const body = mode === 'login' ? { email, password } : { name, email, password };
+      const res = await fetch('/api/auth/' + mode, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      authToken = data.token;
+      authUser = data.user;
+      localStorage.setItem('auth_token', authToken);
+      updateNavAuth();
+      closeAuthModal();
+      showToast('Welcome, ' + authUser.name + '! 👋');
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.style.display = '';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+  }
+
+  function doLogout() {
+    authToken = null;
+    authUser = null;
+    localStorage.removeItem('auth_token');
+    updateNavAuth();
+    showToast('Logged out successfully.');
+  }
+
+  checkAuth();
 </script>
 </body>
 </html>

@@ -16,6 +16,8 @@ const ET_VIDEO_ID = "nuA1qdjO2jY";
 const ET_VIDEO_URL = "https://youtu.be/nuA1qdjO2jY";
 const ET_THUMBNAIL = `https://img.youtube.com/vi/${ET_VIDEO_ID}/hqdefault.jpg`;
 
+const MATLAB_PLAYLIST = "https://youtube.com/playlist?list=PLZV7tleirGTLyUAgkXI3mQo1fAnKy_aPc";
+
 const COURSES = [
   {
     icon: "code-slash-outline" as const,
@@ -25,6 +27,7 @@ const COURSES = [
     level: "Beginner - Intermediate",
     badge: "Popular",
     badgeColor: "#27AE60",
+    demoUrl: null as string | null,
   },
   {
     icon: "bar-chart-outline" as const,
@@ -34,6 +37,7 @@ const COURSES = [
     level: "Intermediate",
     badge: "Technical",
     badgeColor: Colors.brand.accent,
+    demoUrl: MATLAB_PLAYLIST,
   },
   {
     icon: "desktop-outline" as const,
@@ -43,6 +47,7 @@ const COURSES = [
     level: "Beginner",
     badge: "Starter",
     badgeColor: "#F2994A",
+    demoUrl: null as string | null,
   },
   {
     icon: "hardware-chip-outline" as const,
@@ -52,6 +57,7 @@ const COURSES = [
     level: "All Levels",
     badge: "New",
     badgeColor: "#EB5757",
+    demoUrl: null as string | null,
   },
 ];
 
@@ -222,6 +228,17 @@ function CourseCard({
           <Text style={styles.metaText}>{course.level}</Text>
         </View>
       </View>
+
+      {course.demoUrl && (
+        <Pressable
+          onPress={() => Linking.openURL(course.demoUrl!)}
+          style={({ pressed }) => [styles.demoBtn, pressed && styles.pressed]}
+        >
+          <Ionicons name="logo-youtube" size={15} color="#FF0000" />
+          <Text style={styles.demoBtnText}>Demo Lectures Playlist</Text>
+          <Ionicons name="open-outline" size={13} color={Colors.brand.primaryLight} />
+        </Pressable>
+      )}
 
       <Pressable
         onPress={onEnroll}
@@ -520,5 +537,22 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.82,
+  },
+  demoBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#FFF5F5",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#FFCDD2",
+  },
+  demoBtnText: {
+    fontFamily: "Poppins_600SemiBold",
+    fontSize: 13,
+    color: Colors.brand.darkText,
+    flex: 1,
   },
 });
